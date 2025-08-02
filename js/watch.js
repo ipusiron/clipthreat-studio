@@ -44,7 +44,7 @@ window.addEventListener("DOMContentLoaded", () => {
       addLogEntryToDOM(entry);
     }
     
-    // チュートリアル進行チェック
+    // チュートリアル進行チェック（基本的な進行のみ）
     if (type === 'detection') {
       if (watchTutorialStep === 2) {
         updateWatchTutorialStep(3);
@@ -113,8 +113,19 @@ window.addEventListener("DOMContentLoaded", () => {
         const preview = current.length > 100 ? 
           escapedText.substring(0, 100) + '...' : escapedText;
         
-        const info = `文字数: ${current.length} | タイプ: ${detectContentType(current)}`;
+        const contentType = detectContentType(current);
+        const info = `文字数: ${current.length} | タイプ: ${contentType}`;
         addLogEntry(`変化検出 - ${info}<br><div class="preview-content">${preview}</div>`, 'detection');
+        
+        // ステップ4でのチュートリアル進行チェック（URLまたはメールアドレス検出時）
+        if (watchTutorialStep === 4 && (contentType === 'URL' || contentType === 'Email')) {
+          updateWatchTutorialStep(5);
+          // ステップ5でOKボタンを表示
+          const okButton = document.querySelector('#watch-step5 .step-ok-button');
+          if (okButton) {
+            okButton.style.display = 'inline-block';
+          }
+        }
         
         lastClipboardContent = current;
         
@@ -229,6 +240,11 @@ window.addEventListener("DOMContentLoaded", () => {
   intervalSelect.addEventListener('change', () => {
     if (watchTutorialStep === 4 || watchTutorialStep === 5) {
       updateWatchTutorialStep(5);
+      // ステップ5でOKボタンを表示
+      const okButton = document.querySelector('#watch-step5 .step-ok-button');
+      if (okButton) {
+        okButton.style.display = 'inline-block';
+      }
     }
     if (intervalId) {
       stopWatching();
@@ -287,6 +303,51 @@ window.addEventListener("DOMContentLoaded", () => {
       stopWatching();
     }
     clearWatchLog();
+    
+    // OKボタンを非表示にする
+    const okButton = document.querySelector('#watch-step5 .step-ok-button');
+    if (okButton) {
+      okButton.style.display = 'none';
+    }
+    
+    // お祝いメッセージを非表示にする
+    const celebrationDiv = document.getElementById('watchCelebrationMessage');
+    if (celebrationDiv) {
+      celebrationDiv.style.display = 'none';
+    }
+  };
+
+  window.confirmWatchStep5 = function() {
+    // ステップ5完了
+    document.getElementById('watch-step5').classList.add('completed');
+    document.getElementById('watch-step5').classList.remove('active');
+    
+    // OKボタンを非表示にする
+    const okButton = document.querySelector('#watch-step5 .step-ok-button');
+    if (okButton) {
+      okButton.style.display = 'none';
+    }
+    
+    // 完了メッセージを専用領域に表示
+    const celebrationDiv = document.getElementById('watchCelebrationMessage');
+    celebrationDiv.innerHTML = `
+      <div class="clipboard-result">
+        <div class="action-info">
+          <span class="action">🎉 チュートリアル完了！</span>
+          <span class="timestamp">${new Date().toLocaleTimeString('ja-JP')}</span>
+        </div>
+        <div class="content-info">
+          <div class="preview" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #4caf50;">
+            <strong>おめでとうございます！監視モードをマスターしました！</strong><br>
+            📡 リアルタイム監視の仕組みを理解<br>
+            🔍 データタイプ判別機能を体験<br>
+            ⚙️ 監視間隔の調整方法を習得<br>
+            次は他のタブでより高度な脅威について学習しましょう！
+          </div>
+        </div>
+      </div>
+    `;
+    celebrationDiv.style.display = 'block';
   };
 
 

@@ -123,6 +123,43 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById('step1').classList.add('active');
     inputArea.value = '';
     outputBox.innerHTML = '<div class="message info">📋 チュートリアルをリセットしました。ステップ1から始めましょう！</div>';
+    
+    // OKボタンを非表示にする
+    const okButton = document.querySelector('#step4 .step-ok-button');
+    if (okButton) {
+      okButton.style.display = 'none';
+    }
+  };
+
+  window.confirmStep4 = function() {
+    // ステップ4完了
+    document.getElementById('step4').classList.add('completed');
+    document.getElementById('step4').classList.remove('active');
+    
+    // OKボタンを非表示にする
+    const okButton = document.querySelector('#step4 .step-ok-button');
+    if (okButton) {
+      okButton.style.display = 'none';
+    }
+    
+    // 全ステップ完了のお祝いメッセージ
+    outputBox.innerHTML = `
+      <div class="clipboard-result">
+        <div class="action-info">
+          <span class="action">🎉 チュートリアル完了！</span>
+          <span class="timestamp">${new Date().toLocaleTimeString('ja-JP')}</span>
+        </div>
+        <div class="content-info">
+          <div class="preview" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #4caf50;">
+            <strong>おめでとうございます！</strong><br>
+            クリップボード基本操作をマスターしました！<br>
+            📋 読み取り・書き込み・クリアの操作方法を習得<br>
+            🔒 セキュリティの重要性も理解<br>
+            次は他のタブで更なる脅威について学習しましょう！
+          </div>
+        </div>
+      </div>
+    `;
   };
 
   function updateTutorialStep(stepNumber) {
@@ -149,6 +186,11 @@ window.addEventListener("DOMContentLoaded", () => {
   window.writeClipboard = async function() {
     await originalWriteClipboard();
     updateTutorialStep(4);
+    // ステップ4でOKボタンを表示
+    const okButton = document.querySelector('#step4 .step-ok-button');
+    if (okButton) {
+      okButton.style.display = 'inline-block';
+    }
   };
 
   document.getElementById('step1').classList.add('active');

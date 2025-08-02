@@ -19,7 +19,7 @@
       </button>
       <button class="tab-button" data-tab="tab-watch">🔍 監視モード</button>
       <button class="tab-button" data-tab="tab-sniff">
-        🎭 pasteスニッフィング
+        🎭 pasteイベントスニッフィング
       </button>
       <button class="tab-button" data-tab="tab-clickfix">
         🚨 ClickFix攻撃
@@ -78,6 +78,7 @@
               <span class="step-number">4</span>
               <div class="step-content">
                 <p>他のアプリ（メモ帳など）やブラウザーの検索欄にて、Ctrl+Vで貼り付けて確認！</p>
+                <button class="step-ok-button" onclick="confirmStep4()" style="display: none; margin-top: 0.5rem;">✅ 確認できました</button>
               </div>
             </div>
           </div>
@@ -154,6 +155,7 @@
               <div class="step-content">
                 <p>監視間隔を変更して、検出の反応速度の違いを体験してみましょう</p>
                 <small>推奨：0.5秒にして素早い反応を確認後、5秒にして違いを体感</small>
+                <button class="step-ok-button" onclick="confirmWatchStep5()" style="display: none; margin-top: 0.5rem;">✅ 体験できました</button>
               </div>
             </div>
           </div>
@@ -184,12 +186,142 @@
         </div>
         
         <div id="watchLog" class="output-box watch-log"></div>
+        
+        <div id="watchCelebrationMessage" class="celebration-message" style="display: none;"></div>
       </section>
 
       <section id="tab-sniff" class="tab-content">
-        <h2>🎭 pasteスニッフィング</h2>
-        <input id="sniffInput" placeholder="ここに貼り付けてください" />
+        <h2>🎭 pasteイベントスニッフィング</h2>
+        
+        <div class="explanation-box">
+          <h3>💡 この機能について</h3>
+          <p>pasteイベントスニッフィングは、ユーザーが入力欄に貼り付けを行った瞬間に、その内容を傍受する技術です。</p>
+          <p><strong>仕組み：</strong>JavaScriptの<code>paste</code>イベントを使用して、クリップボードデータを読み取ります。</p>
+          <div class="security-note">
+            🔒 <strong>セキュリティリスク：</strong>悪意あるサイトが、パスワードや機密情報を含む貼り付け内容を盗み取る可能性があります。
+          </div>
+        </div>
+
+
+
+        <div class="tutorial-box">
+          <h3>🎯 実際に試してみよう！</h3>
+          <div class="tutorial-steps">
+            <div class="step" id="sniff-step1">
+              <span class="step-number">1</span>
+              <div class="step-content">
+                <p>まず、テスト用の文字列をコピーしましょう（下の文字列をクリックして選択）</p>
+                <code class="sample-text" onclick="selectSniffText(this)">テスト用パスワード: SecretPass123!</code>
+                <small>↑ クリックして選択 → Ctrl+Cでコピー</small>
+              </div>
+            </div>
+            <div class="step" id="sniff-step2">
+              <span class="step-number">2</span>
+              <div class="step-content">
+                <p>下の入力欄に貼り付けてください（Ctrl+V）</p>
+                <small>💡 貼り付けた瞬間にpasteイベントが発生し、内容が傍受されます</small>
+              </div>
+            </div>
+            <div class="step" id="sniff-step3">
+              <span class="step-number">3</span>
+              <div class="step-content">
+                <p>ログエリアに表示された傍受された内容を確認しましょう</p>
+                <small>⚠️ 実際の攻撃では、この情報が攻撃者のサーバーに送信されます</small>
+                <button class="step-ok-button" onclick="confirmStep3()" style="display: none; margin-top: 0.5rem;">✅ 理解しました</button>
+              </div>
+            </div>
+            <div class="step" id="sniff-step4">
+              <span class="step-number">4</span>
+              <div class="step-content">
+                <p>別の種類のデータも試してみましょう（クレジットカード風の数字）</p>
+                <code class="sample-text" onclick="selectSniffText(this)">4111-1111-1111-1111</code>
+                <small>↑ この偽カード番号をコピーして貼り付けてみてください</small>
+              </div>
+            </div>
+            <div class="step" id="sniff-step5">
+              <span class="step-number">5</span>
+              <div class="step-content">
+                <p>実際のWebサイトでは、このような危険性があることを覚えておきましょう</p>
+                <small>🛡️ 重要な情報は信頼できるサイトでのみ貼り付けるようにしてください</small>
+                <button class="step-ok-button" onclick="confirmStep5()" style="display: none; margin-top: 0.5rem;">✅ 理解しました</button>
+              </div>
+            </div>
+          </div>
+          <button class="tutorial-reset" onclick="resetSniffTutorial()">🔄 チュートリアルをリセット</button>
+        </div>
+
+        <div class="phishing-form-container">
+          <div class="phishing-form">
+            <div class="phishing-header">
+              <span class="lock-icon">🔒</span>
+              <h3>セキュアログインポータル（仮想のフィッシング詐欺ページ）</h3>
+              <span class="warning-badge">安全</span>
+            </div>
+            <div class="phishing-content">
+              <label for="sniffInput" class="phishing-label">
+                パスワード / 認証コード / 機密情報
+              </label>
+              <input 
+                id="sniffInput" 
+                type="password" 
+                placeholder="パスワードまたは認証コードを貼り付けてください..." 
+                class="phishing-input"
+              />
+              <small class="phishing-hint">💡 パスワードマネージャーからの貼り付けも可能です</small>
+            </div>
+            <div class="phishing-footer">
+              <span class="fake-secure">🛡️ SSL暗号化通信中</span>
+              <span class="fake-verified">✓ 認証済みサイト</span>
+            </div>
+          </div>
+        </div>
+        
         <div id="sniffLog" class="output-box"></div>
+
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleAttackScenariosAccordion()">
+            <h3>⚠️ 実際の攻撃シナリオを確認する</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content" id="attackScenariosAccordionContent">
+            <div class="explanation-box" style="background: #fff0f0; border-color: #ffc1c1; margin: 0;">
+              <ul>
+                <li><strong>フィッシングサイト</strong>：偽のログインフォームで、ユーザーがパスワードマネージャーから貼り付けたパスワードを盗取</li>
+                <li><strong>偽の支払いページ</strong>：クレジットカード情報や暗号通貨ウォレットアドレスの貼り付けを監視</li>
+                <li><strong>偽のファイル共有サイト</strong>：機密文書やプライベートキーの貼り付けを傍受</li>
+                <li><strong>ソーシャルエンジニアリング</strong>：「エラーログを貼り付けてください」等の指示で、システム情報を取得</li>
+                <li><strong>偽のサポートサイト</strong>：技術サポートを装い、設定ファイルやログファイルの貼り付けを要求</li>
+                <li><strong>悪意あるWebアプリ</strong>：便利ツールを装い、ユーザーのデータ入力を監視</li>
+              </ul>
+              <div class="warning-text" style="margin-top: 1rem;">
+                ⚠️ <strong>重要：</strong>この攻撃は、ユーザーが貼り付け操作を行うだけで実行されます。特別な権限や複雑な手順は不要です。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleSniffAccordion()">
+            <h3>🛡️ 対策方法を確認する</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content" id="sniffAccordionContent">
+            <div class="explanation-box" style="background: #f0fff0; border-color: #90ee90; margin: 0;">
+              <ul>
+                <li><strong>サイトの信頼性確認</strong>：URLやSSL証明書を必ず確認してから貼り付けを行う</li>
+                <li><strong>手動入力の優先</strong>：重要な情報は可能な限り手動で入力する</li>
+                <li><strong>ブラウザー拡張機能</strong>：pasteイベントを制限する拡張機能を使用</li>
+                <li><strong>開発者ツール確認</strong>：F12キーで開発者ツールを開き、怪しいJavaScriptがないかチェック</li>
+                <li><strong>パスワードマネージャーの活用</strong>：自動入力機能により貼り付けを避ける</li>
+                <li><strong>コンテンツセキュリティポリシー</strong>：CSPヘッダーでJavaScriptの実行を制限</li>
+                <li><strong>ブラウザーの設定</strong>：JavaScriptを部分的に無効化できるブラウザー設定を活用</li>
+              </ul>
+              <div class="security-note" style="margin-top: 1rem;">
+                💡 <strong>開発者向け：</strong>ウェブサイト運営者は、pasteイベントリスナーの使用を最小限に抑え、必要な場合は透明性を保つことが重要です。
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="tab-clickfix" class="tab-content">
