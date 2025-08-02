@@ -326,11 +326,123 @@
 
       <section id="tab-clickfix" class="tab-content">
         <h2>🚨 ClickFix攻撃シミュレーション</h2>
-        <p class="warning">
-          あなたのシステムに問題が検出されました。今すぐ修復してください。
-        </p>
-        <button onclick="simulateClickFix()">✅ 修復する（推奨）</button>
+        
+        <div class="explanation-box">
+          <h3>💡 ClickFix攻撃とは</h3>
+          <p>ClickFix攻撃は、ユーザーを騙して悪意あるコマンドを実行させるソーシャルエンジニアリング攻撃です。</p>
+          <p><strong>仕組み：</strong>偽のエラーメッセージや「修復」ボタンで、危険なコマンドをクリップボードにコピーし、実行を促します。</p>
+          <div class="security-note">
+            🔒 <strong>セキュリティリスク：</strong>一見無害なボタンクリックで、システム全体を乗っ取られる可能性があります。
+          </div>
+        </div>
+
+        <div class="tutorial-box">
+          <h3>🎯 ClickFix攻撃を体験しよう！</h3>
+          <div class="tutorial-steps">
+            <div class="step" id="clickfix-step1">
+              <span class="step-number">1</span>
+              <div class="step-content">
+                <p>まず、上のClickFix攻撃の説明を読んで仕組みを理解しましょう</p>
+                <small>💡 攻撃の概要と危険性を把握してから実際の体験に移ります</small>
+                <button class="step-ok-button" onclick="confirmClickFixStep1()" style="margin-top: 0.5rem;">✅ ClickFix攻撃の説明を読んだ</button>
+              </div>
+            </div>
+            <div class="step" id="clickfix-step2">
+              <span class="step-number">2</span>
+              <div class="step-content">
+                <p>下の偽エラーダイアログの仕掛けを観察した後、「🔧 今すぐ修復する（推奨）」ボタンをクリックして攻撃の流れを体験</p>
+                <small>💡 本物のエラーメッセージに見える視覚的トリック（点滅、緊急バッジ等）に注目<br>⚠️ 実際にはクリップボードに危険なコマンドがコピーされます</small>
+              </div>
+            </div>
+            <div class="step" id="clickfix-step3">
+              <span class="step-number">3</span>
+              <div class="step-content">
+                <p>下のログエリアで段階的な攻撃の進行を確認しましょう</p>
+                <small>🎓 各ステップでの攻撃手法と危険性を学習</small>
+                <button class="step-ok-button" onclick="confirmClickFixStep3()" style="display: none; margin-top: 0.5rem;">✅ ステップ4まで読んだ</button>
+              </div>
+            </div>
+            <div class="step" id="clickfix-step4">
+              <span class="step-number">4</span>
+              <div class="step-content">
+                <p>「❌ 後で修復」ボタンもクリックして、キャンセルボタンの罠を確認した後、下の対策方法を読みましょう</p>
+                <small>🛡️ 安全な対処法と具体的な対策テクニックを学習</small>
+                <button class="step-ok-button" onclick="confirmClickFixStep4()" style="display: none; margin-top: 0.5rem;">✅ 対策方法を読んだ</button>
+              </div>
+            </div>
+          </div>
+          <button class="tutorial-reset" onclick="resetClickFixTutorial()">🔄 チュートリアルをリセット</button>
+        </div>
+
+        <div class="clickfix-demo">
+          <div class="fake-error-dialog">
+            <div class="error-header">
+              <span class="error-icon">⚠️</span>
+              <h3>システムエラー - 緊急修復が必要</h3>
+              <span class="urgent-badge">緊急</span>
+            </div>
+            <div class="error-content">
+              <p class="error-message">
+                <strong>重要な警告：</strong>システムファイルが破損しています。<br>
+                すぐに修復しないと、データが失われる可能性があります。
+              </p>
+              <div class="error-details">
+                エラーコード: 0x80070057<br>
+                影響ファイル: system32\kernel.dll<br>
+                推定修復時間: 2-3分
+              </div>
+            </div>
+            <div class="error-actions">
+              <button class="fix-button" onclick="simulateClickFix()">🔧 今すぐ修復する（推奨）</button>
+              <button class="cancel-button" onclick="showCancelWarning()">❌ 後で修復</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="button-row">
+          <button onclick="resetClickFixDemo()" class="secondary-button">🔄 デモをリセット</button>
+        </div>
+        
         <div id="clickfixLog" class="output-box"></div>
+
+        <div id="clickfixCelebrationMessage" class="celebration-message" style="display: none;"></div>
+
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleClickFixAccordion()">
+            <h3>🛡️ ClickFix攻撃への対策方法</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content" id="clickfixAccordionContent">
+            <div class="explanation-box" style="background: #f0fff0; border-color: #90ee90; margin: 0;">
+              <h4>🚨 即座に対処すべきこと</h4>
+              <ul>
+                <li><strong>ページを閉じる</strong>：「修復」や「キャンセル」ボタンを押さず、ブラウザーを閉じる</li>
+                <li><strong>クリップボードを確認</strong>：怪しいコマンドがコピーされていないかチェック</li>
+                <li><strong>PowerShell実行の回避</strong>：Win+Rダイアログでは絶対にコマンドを実行しない</li>
+              </ul>
+              
+              <h4>🛡️ 予防対策</h4>
+              <ul>
+                <li><strong>疑いの習慣</strong>：突然のエラーメッセージやシステム警告は疑う</li>
+                <li><strong>公式チャネルの利用</strong>：システム修復は公式サポートやWindows Updateで行う</li>
+                <li><strong>URLの確認</strong>：信頼できないサイトでの作業を避ける</li>
+                <li><strong>最新ブラウザーの使用</strong>：セキュリティ機能が向上したブラウザーを使用</li>
+              </ul>
+              
+              <h4>⚙️ 技術的対策</h4>
+              <ul>
+                <li><strong>PowerShell実行ポリシー</strong>：ExecutionPolicyをRestrictedに設定</li>
+                <li><strong>クリップボード監視ツール</strong>：怪しいコマンドのコピーを検知するツール使用</li>
+                <li><strong>ブラウザー拡張機能</strong>：悪意あるスクリプトをブロックする拡張機能の導入</li>
+                <li><strong>ユーザーアカウント制御(UAC)</strong>：管理者権限が必要な操作で確認ダイアログを表示</li>
+              </ul>
+              
+              <div class="security-note" style="margin-top: 1rem;">
+                💡 <strong>企業向け対策：</strong>社員教育でClickFix攻撃の認知度を高め、定期的なセキュリティ訓練を実施することが重要です。
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="tab-autopaste" class="tab-content">
