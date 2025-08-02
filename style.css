@@ -87,21 +87,32 @@ p {
 .tab-button {
   background: #ddd;
   border: none;
-  padding: 0.5em 1em;
+  padding: 0.7em 1.2em;
   margin: 0.3em;
-  font-size: 0.95em;
+  font-size: 1em;
+  font-weight: 500;
   cursor: pointer;
   border-radius: 5px;
-  transition: background 0.3s;
+  transition: all 0.3s;
+  color: #333;
+  text-shadow: none;
+  letter-spacing: 0.02em;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tab-button:hover {
   background: #ccc;
+  color: #222;
 }
 
 .tab-button.active {
   background: #4285f4;
   color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* メインコンテンツ */
