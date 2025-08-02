@@ -34,17 +34,59 @@
 - 🎭 pasteイベントを使ったスニッフィング攻撃の再現
 - 🚨 ClickFix攻撃（修復誘導型コピー攻撃）の完全再現
 - 🧲 自動ペースト→自動送信型のフォーム偽装攻撃
-- 🧪 不正制御文字の注入（ゼロ幅スペース、右から左文字など）
-- 🔒 セキュリティTipsタブによる背景解説と対策
+- 🧪 Unicode文字細工攻撃（ゼロ幅スペース、RTL文字、同形異義文字など）
+- 🔍 WeirdString Inspector連携による詳細Unicode分析
+- 🔒 セキュリティTipsタブによる包括的な対策ガイド
 
 ---
 
 ## 🛠️ 使い方
 
-1. このリポジトリを `git clone` するか、上記のGitHub Pagesにアクセス
+1. このリポジトリを `git clone` するか、上記の[GitHub Pages上のデモサイト](https://ipusiron.github.io/clipthreat-studio/)にアクセス
 2. タブを切り替えて各攻撃手法を体験
 3. 各操作に対して、コピーされた内容や挙動をログ表示
 4. Tipsタブで技術的背景と防御法を確認
+
+---
+
+## 🔍 WeirdString Inspector連携
+
+文字細工タブ（Unicode文字細工攻撃）では、各攻撃デモの実行後に **「🔍 WeirdString Inspectorで調査」** ボタンが表示されます。
+
+### アクセス先URL形式
+
+ボタンをクリックすると、以下の形式でWeirdString Inspectorにアクセスします：
+
+```
+https://ipusiron.github.io/weirdstring-inspector/?text={攻撃文字列}&source=clipthreat-studio&attack_type={攻撃タイプ}
+```
+
+### パラメーター詳細
+
+| パラメーター | 説明 | 例 |
+|-----------|------|-----|
+| `text` | 攻撃に使用されたUnicode文字列（URLエンコード済み） | `f%E2%80%8Bl%E2%80%8Ba%E2%80%8Bg.txt` |
+| `source` | ClipThreat Studioからのアクセスを示す識別子 | `clipthreat-studio` |
+| `attack_type` | 実行された攻撃タイプ | `ゼロ幅スペース攻撃` |
+
+### 連携する攻撃タイプ
+
+- **ゼロ幅スペース攻撃**: 見た目に分からない不可視文字の混入
+- **RTL文字拡張子偽装**: 右から左文字による拡張子偽装
+- **スクリプト混在攻撃**: 複数文字体系の混在によるフィッシング
+- **同形異義文字攻撃**: 見た目が同じ異なる文字によるドメイン偽装
+
+### 実装例
+
+```javascript
+// 例：ゼロ幅スペース攻撃の場合
+const text = "f\u200Bl\u200Ba\u200Bg.txt";  // 実際の攻撃文字列
+const attackType = "ゼロ幅スペース攻撃";
+const url = `https://ipusiron.github.io/weirdstring-inspector/?text=${encodeURIComponent(text)}&source=clipthreat-studio&attack_type=${encodeURIComponent(attackType)}`;
+window.open(url, '_blank');
+```
+
+> **注意**: WeirdString Inspector側でのGETパラメータ受信機能は別途実装予定です。
 
 ---
 

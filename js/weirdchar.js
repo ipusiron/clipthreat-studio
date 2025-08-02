@@ -11,6 +11,20 @@ window.addEventListener("DOMContentLoaded", () => {
     return div.innerHTML;
   }
 
+  // WeirdString Inspectorで文字列を調査する関数
+  window.openWeirdStringInspector = function(text, attackType) {
+    const inspectorUrl = "https://ipusiron.github.io/weirdstring-inspector/";
+    const params = new URLSearchParams({
+      text: text,
+      source: 'clipthreat-studio',
+      attack_type: attackType
+    });
+    const fullUrl = `${inspectorUrl}?${params.toString()}`;
+    
+    // 新しいタブで開く
+    window.open(fullUrl, '_blank');
+  };
+
   function showAttackResult(title, description, originalText, displayText, attackType = 'info') {
     const timestamp = new Date().toLocaleTimeString('ja-JP');
     const icons = {
@@ -40,6 +54,13 @@ window.addEventListener("DOMContentLoaded", () => {
             <strong>見た目:</strong> <code>${escapeHtml(displayText)}</code><br>
             <strong>実際:</strong> <code>${escapeHtml(originalText)}</code><br>
             <strong>Unicode詳細:</strong> <code style="font-size: 0.8rem;">${codePoints}</code>
+            <div style="margin-top: 1rem; padding: 0.8rem; background: #e3f2fd; border-radius: 4px;">
+              <strong>🔍 詳細分析:</strong> WeirdString Inspector で詳しく調査
+              <button onclick="openWeirdStringInspector('${originalText.replace(/'/g, "\\'")}', '${title}')" 
+                      style="background: #1976d2; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; margin-left: 0.5rem; cursor: pointer; font-size: 0.85rem;">
+                🔍 WeirdString Inspectorで調査
+              </button>
+            </div>
           </div>
           <div class="meta">
             <span>文字数: ${originalText.length}</span>

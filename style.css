@@ -213,14 +213,23 @@ button:hover {
 }
 
 .explanation-box h3 {
-  margin-top: 0;
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   color: #1976d2;
   font-size: 1.1rem;
 }
 
+.explanation-box h3:first-child {
+  margin-top: 0;
+}
+
 .explanation-box ul {
-  margin: 0;
+  margin: 0.75rem 0 0 0;
+  padding-left: 1.5rem;
+}
+
+.explanation-box ol {
+  margin: 0.75rem 0 0 0;
   padding-left: 1.5rem;
 }
 
