@@ -643,8 +643,9 @@ footer a {
 }
 
 .accordion-content.open {
-  max-height: 500px;
+  max-height: 800px;
   padding: 1.5rem;
+  overflow-y: auto;
 }
 
 .accordion-content .explanation-box {
@@ -932,4 +933,136 @@ footer a {
 
 .cancel-button:hover {
   background: #5a6268 !important;
+}
+
+/* 自動送信攻撃デモスタイル */
+.autopaste-demo {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.dev-console-form {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  max-width: 600px;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Courier New', 'Monaco', monospace;
+}
+
+.console-header {
+  background: linear-gradient(135deg, #007acc, #005a9e);
+  color: white;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.console-icon {
+  font-size: 1.2rem;
+}
+
+.console-title {
+  font-weight: bold;
+  flex: 1;
+}
+
+.console-path {
+  background: rgba(255,255,255,0.2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+.console-content {
+  padding: 1.5rem;
+  background: #252526;
+  color: #d4d4d4;
+}
+
+.console-prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.prompt-symbol {
+  color: #4ec9b0;
+  font-weight: bold;
+}
+
+.prompt-text {
+  color: #9cdcfe;
+}
+
+.console-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #4fc1ff;
+  font-size: 0.9rem;
+}
+
+.console-input {
+  width: 100% !important;
+  padding: 0.8rem !important;
+  border: 1px solid #3c3c3c !important;
+  border-radius: 4px !important;
+  font-size: 0.9rem !important;
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
+  font-family: 'Courier New', monospace !important;
+  transition: all 0.3s !important;
+  margin: 0 !important;
+}
+
+.console-input:focus {
+  border-color: #007acc !important;
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.3) !important;
+  outline: none !important;
+  background: #2d2d30 !important;
+}
+
+.console-input::placeholder {
+  color: #6a9955;
+  font-style: italic;
+}
+
+.console-hint {
+  display: block;
+  margin-top: 0.5rem;
+  color: #858585;
+  font-size: 0.8rem;
+}
+
+.console-footer {
+  background: #2d2d30;
+  padding: 0.6rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #858585;
+  border-top: 1px solid #3c3c3c;
+}
+
+.terminal-indicator, .secure-connection {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.terminal-indicator {
+  color: #4ec9b0;
+}
+
+.secure-connection {
+  color: #ce9178;
 }

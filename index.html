@@ -94,6 +94,7 @@
           <button onclick="readClipboard()" title="クリップボードの現在の内容を表示">📋 クリップボードから読み取る</button>
           <button onclick="writeClipboard()" title="テキストエリアの内容をクリップボードにコピー">✍️ クリップボードに書き込む</button>
           <button onclick="clearClipboard()" title="クリップボードを空にする">🗑️ クリップボードをクリア</button>
+          <button onclick="resetBasicDemo()" class="secondary-button" title="デモの状態をリセットする">🔄 デモをリセット</button>
         </div>
         <div class="info-text">
           <small>💡 Ctrl+Enterで書き込みも可能です</small>
@@ -195,10 +196,15 @@
         
         <div class="explanation-box">
           <h3>💡 この機能について</h3>
-          <p>pasteイベントスニッフィングは、ユーザーが入力欄に貼り付けを行った瞬間に、その内容を傍受する技術です。</p>
+          <p>pasteイベントスニフィングは、ユーザーが入力欄に貼り付けを行った瞬間に、その内容を<strong>傍受・記録</strong>する技術です。</p>
           <p><strong>仕組み：</strong>JavaScriptの<code>paste</code>イベントを使用して、クリップボードデータを読み取ります。</p>
           <div class="security-note">
             🔒 <strong>セキュリティリスク：</strong>悪意あるサイトが、パスワードや機密情報を含む貼り付け内容を盗み取る可能性があります。
+          </div>
+          <div style="background: #fff3e0; border: 1px solid #ffb74d; padding: 0.8rem; margin-top: 1rem; border-radius: 4px; font-size: 0.9rem;">
+            <strong>📋 自動送信攻撃との違い：</strong><br>
+            • <strong>pasteスニフィング</strong>：内容を傍受・記録（後で送信）<br>
+            • <strong>自動送信攻撃</strong>：貼り付けと同時に即座に外部送信
           </div>
         </div>
 
@@ -277,6 +283,10 @@
         </div>
         
         <div id="sniffLog" class="output-box"></div>
+
+        <div class="button-row">
+          <button class="secondary-button" onclick="resetSniffDemo()">🔄 デモをリセット</button>
+        </div>
 
         <div class="accordion-section">
           <div class="accordion-header" onclick="toggleAttackScenariosAccordion()">
@@ -446,31 +456,520 @@
       </section>
 
       <section id="tab-autopaste" class="tab-content">
-        <h2>🧲 自動ペースト送信デモ</h2>
-        <input
-          id="autoInput"
-          placeholder="ここにペーストすると即送信されます"
-        />
+        <h2>🧲 自動送信攻撃シミュレーション</h2>
+        
+        <div class="explanation-box">
+          <h3>💡 自動送信攻撃とは</h3>
+          <p>ユーザーが入力欄に貼り付けを行った瞬間に、その内容を攻撃者のサーバーへ<strong>即座に自動送信</strong>する攻撃です。</p>
+          <p><strong>仕組み：</strong>pasteイベントと組み合わせて、即座にfetch()やXMLHttpRequestで外部サーバーに送信します。</p>
+          <div class="security-note">
+            🔒 <strong>セキュリティリスク：</strong>APIキー、設定ファイル、SSH鍵などが<strong>リアルタイムで</strong>攻撃者に送信されます。
+          </div>
+          <div style="background: #fff3e0; border: 1px solid #ffb74d; padding: 0.8rem; margin-top: 1rem; border-radius: 4px; font-size: 0.9rem;">
+            <strong>📋 pasteスニフィングとの違い：</strong><br>
+            • <strong>pasteスニフィング</strong>：内容を傍受・記録（後で送信）<br>
+            • <strong>自動送信攻撃</strong>：貼り付けと同時に即座に外部送信
+          </div>
+        </div>
+
+        <div class="tutorial-box">
+          <h3>🎯 自動送信攻撃を体験しよう！</h3>
+          <div class="tutorial-steps">
+            <div class="step" id="auto-step1">
+              <span class="step-number">1</span>
+              <div class="step-content">
+                <p>まず、上の自動送信攻撃の説明を読んで仕組みを理解しましょう</p>
+                <small>💡 pasteスニフィングとの違いも確認してください</small>
+                <button class="step-ok-button" onclick="confirmAutoStep1()" style="margin-top: 0.5rem;">✅ 攻撃の仕組みを理解した</button>
+              </div>
+            </div>
+            <div class="step" id="auto-step2">
+              <span class="step-number">2</span>
+              <div class="step-content">
+                <p>テスト用のAPIキーをコピーしましょう（下の文字列をクリックして選択）</p>
+                <code class="sample-text" onclick="selectAutoText(this)">sk-1234567890abcdef1234567890abcdef1234567890abcdef</code>
+                <small>↑ クリックして選択 → Ctrl+Cでコピー</small>
+              </div>
+            </div>
+            <div class="step" id="auto-step3">
+              <span class="step-number">3</span>
+              <div class="step-content">
+                <p>下の開発者コンソールの入力欄に貼り付けして自動送信攻撃を体験</p>
+                <small>⚠️ 貼り付けた瞬間に外部サーバーへ自動送信されます</small>
+              </div>
+            </div>
+            <div class="step" id="auto-step4">
+              <span class="step-number">4</span>
+              <div class="step-content">
+                <p>ログで段階的な攻撃進行を確認し、リアルタイム送信の危険性を学習</p>
+                <small>🎓 送信タイミングと影響について理解を深めましょう</small>
+                <button class="step-ok-button" onclick="confirmAutoStep4()" style="display: none; margin-top: 0.5rem;">✅ 送信攻撃を理解した</button>
+              </div>
+            </div>
+          </div>
+          <button class="tutorial-reset" onclick="resetAutoTutorial()">🔄 チュートリアルをリセット</button>
+        </div>
+
+        <div class="autopaste-demo">
+          <div class="dev-console-form">
+            <div class="console-header">
+              <span class="console-icon">💻</span>
+              <span class="console-title">開発者コンソール</span>
+              <span class="console-path">~/project/config</span>
+            </div>
+            <div class="console-content">
+              <div class="console-prompt">
+                <span class="prompt-symbol">$</span>
+                <span class="prompt-text">環境変数とAPIキーの設定</span>
+              </div>
+              <label for="autoInput" class="console-label">
+                APIキー / トークン / 設定値
+              </label>
+              <input
+                id="autoInput"
+                type="text"
+                placeholder="export API_KEY=sk-1234... または設定値を貼り付けてください"
+                class="console-input"
+              />
+              <small class="console-hint">💡 .env ファイルや設定ファイルからのコピー&ペーストが便利です</small>
+            </div>
+            <div class="console-footer">
+              <span class="terminal-indicator">⚡ ターミナル接続中</span>
+              <span class="secure-connection">🔒 SSH暗号化通信</span>
+            </div>
+          </div>
+        </div>
+        
         <div id="autoLog" class="output-box"></div>
+
+        <div class="button-row">
+          <button class="secondary-button" onclick="resetAutoDemo()">🔄 デモをリセット</button>
+        </div>
+
+        <div id="autoCelebrationMessage" class="celebration-message" style="display: none;"></div>
+
+        <!-- 対策方法アコーディオン -->
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleAutoAccordion()">
+            <h3>🛡️ 自動送信攻撃の対策方法</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div id="autoAccordionContent" class="accordion-content">
+            <div class="explanation-box">
+              <h3>🔧 技術的対策</h3>
+              <ul>
+                <li><strong>CSP (Content Security Policy)</strong>：外部への不正通信をブロック</li>
+                <li><strong>CORS設定</strong>：信頼できるオリジンからの通信のみ許可</li>
+                <li><strong>入力値サニタイゼーション</strong>：危険な文字列パターンの検出と除去</li>
+                <li><strong>Rate Limiting</strong>：短時間での大量リクエストを制限</li>
+                <li><strong>HTTPS強制</strong>：通信の暗号化でMITM攻撃を防止</li>
+              </ul>
+            </div>
+            
+            <div class="explanation-box">
+              <h3>👤 ユーザー対策</h3>
+              <ul>
+                <li><strong>信頼できないサイトでの貼り付け回避</strong>：APIキーや設定情報は慎重に</li>
+                <li><strong>ブラウザのセキュリティ設定</strong>：クリップボード権限の確認</li>
+                <li><strong>開発者ツールでの検証</strong>：Networkタブでの通信監視</li>
+                <li><strong>パスワードマネージャー活用</strong>：手動コピペの削減</li>
+                <li><strong>定期的なAPIキー更新</strong>：漏洩リスクの最小化</li>
+              </ul>
+            </div>
+            
+            <div class="explanation-box">
+              <h3>🏢 組織的対策</h3>
+              <ul>
+                <li><strong>セキュリティ教育</strong>：開発者向けのクリップボード攻撃啓発</li>
+                <li><strong>コードレビュー</strong>：pasteイベントハンドラーの監査</li>
+                <li><strong>監視システム</strong>：異常な外部通信の検知</li>
+                <li><strong>インシデント対応</strong>：情報漏洩時の迅速な対処プロセス</li>
+                <li><strong>定期的監査</strong>：Webアプリケーションのセキュリティチェック</li>
+              </ul>
+            </div>
+            
+            <div class="explanation-box">
+              <h3>🚨 緊急時対応</h3>
+              <ul>
+                <li><strong>APIキー即座無効化</strong>：漏洩疑いがある場合の緊急停止</li>
+                <li><strong>アクセスログ確認</strong>：不正使用の痕跡調査</li>
+                <li><strong>通信ログ分析</strong>：データ送信先と内容の特定</li>
+                <li><strong>被害範囲特定</strong>：影響を受けるシステムとデータの調査</li>
+                <li><strong>関係者通知</strong>：セキュリティチームや管理者への報告</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="tab-weirdchar" class="tab-content">
-        <h2>🧪 不正文字列注入デモ</h2>
-        <p>
-          以下のボタンでゼロ幅スペースや右から左文字を含む文字列をコピーできます。
-        </p>
-        <button onclick="copyWeirdText()">不正文字列をコピーする</button>
+        <h2>🧪 Unicode文字細工攻撃</h2>
+        
+        <div class="explanation-box">
+          <h3>💡 Unicode文字細工攻撃とは</h3>
+          <p>見た目上は正常に見えるが、実際は不正な文字（ゼロ幅文字、制御文字、RTL文字など）を含む文字列を使った攻撃手法です。</p>
+          <p><strong>危険性：</strong>ファイル名偽装、フィッシング詐欺、セキュリティ検証の回避などに悪用される可能性があります。</p>
+          <div class="security-note">
+            🔒 <strong>攻撃例：</strong>実行ファイル(.exe)をクリック率の高い画像ファイル(.jpg)に見せかける、URLを偽装するなど
+          </div>
+        </div>
+
+        <div class="tutorial-box">
+          <h3>🎯 Unicode攻撃を体験しよう！</h3>
+          <div class="tutorial-steps">
+            <div class="step" id="weird-step1">
+              <span class="step-number">1</span>
+              <div class="step-content">
+                <p>まず基本的なゼロ幅スペース攻撃を体験しましょう</p>
+                <small>一見普通のファイル名に見えますが、隠された文字が含まれています</small>
+                <button class="step-ok-button" onclick="confirmWeirdStep1()" style="display: inline-block; margin-top: 0.5rem;">✅ 理解しました</button>
+              </div>
+            </div>
+            <div class="step" id="weird-step2">
+              <span class="step-number">2</span>
+              <div class="step-content">
+                <p>ゼロ幅スペース混入ファイル名をコピーして体験してください</p>
+                <small>💡 下のボタンをクリックしてからテキストエディタに貼り付けてみてください</small>
+              </div>
+            </div>
+            <div class="step" id="weird-step3">
+              <span class="step-number">3</span>
+              <div class="step-content">
+                <p>今度はRTL（右から左）文字によるファイル拡張子偽装を体験しましょう</p>
+                <small>⚠️ 実行ファイルが画像ファイルに見えるトリックです</small>
+              </div>
+            </div>
+            <div class="step" id="weird-step4">
+              <span class="step-number">4</span>
+              <div class="step-content">
+                <p>すべての攻撃パターンを理解できました</p>
+                <small>🎓 これらの手法がどのように悪用されるかを確認しましょう</small>
+                <button class="step-ok-button" onclick="confirmWeirdStep4()" style="display: none; margin-top: 0.5rem;">✅ 完全理解しました</button>
+              </div>
+            </div>
+          </div>
+          <button class="tutorial-reset" onclick="resetWeirdTutorial()">🔄 チュートリアルをリセット</button>
+        </div>
+
+        <div class="explanation-box" style="background: #fff8e1; border-color: #ffcc02;">
+          <h3>🎯 攻撃実演デモ</h3>
+          <div class="button-row">
+            <button onclick="copyZeroWidthSpaces()" title="ゼロ幅文字が混入されたファイル名をコピー">📁 ゼロ幅スペース攻撃</button>
+            <button onclick="copyRTLTrick()" title="RTL文字による拡張子偽装をコピー">🔄 RTL拡張子偽装</button>
+            <button onclick="copyMixedScript()" title="複数スクリプトが混在した文字列をコピー">🌐 スクリプト混在攻撃</button>
+            <button onclick="copyHomographAttack()" title="同形異義文字による偽装をコピー">👥 同形異義文字攻撃</button>
+          </div>
+        </div>
+        
         <div id="weirdOutput" class="output-box"></div>
+
+        <div class="button-row">
+          <button class="secondary-button" onclick="resetWeirdDemo()">🔄 デモをリセット</button>
+        </div>
+
+        <div id="weirdCelebrationMessage" class="celebration-message" style="display: none;"></div>
+
+        <!-- 攻撃詳細アコーディオン -->
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleWeirdAttackAccordion()">
+            <h3>⚠️ 実際の攻撃シナリオ詳細</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div id="weirdAttackAccordionContent" class="accordion-content">
+            <div class="explanation-box" style="background: #fff0f0; border-color: #ffc1c1; margin: 0;">
+              <h3>🎭 ゼロ幅スペース攻撃</h3>
+              <ul>
+                <li><strong>ファイル名偽装</strong>：flag.txt が実際は fla[ZWSP]g.txt となっている</li>
+                <li><strong>検索回避</strong>：システムの検索機能で見つからないファイル名を作成</li>
+                <li><strong>重複ファイル作成</strong>：見た目上同じ名前で複数ファイルを作成</li>
+                <li><strong>セキュリティツール回避</strong>：ブラックリストに載ったファイル名の検出回避</li>
+              </ul>
+              
+              <h3>🔄 RTL文字攻撃</h3>
+              <ul>
+                <li><strong>拡張子偽装</strong>：evil[RTL]gnp.exe が exe.png に見える</li>
+                <li><strong>URL偽装</strong>：悪意あるドメインを信頼できるサイトに見せかけ</li>
+                <li><strong>フィッシング詐欺</strong>：正規サイトそっくりのURLを作成</li>
+                <li><strong>マルウェア配布</strong>：実行ファイルを無害なファイルに偽装</li>
+              </ul>
+              
+              <h3>👥 同形異義文字攻撃</h3>
+              <ul>
+                <li><strong>ドメインなりすまし</strong>：аpple.com（キリル文字のа）でapple.comを偽装</li>
+                <li><strong>IDN偽装攻撃</strong>：国際化ドメイン名の脆弱性を悪用</li>
+                <li><strong>認証情報詐取</strong>：正規サイトと見分けがつかない偽サイト作成</li>
+                <li><strong>ソーシャルエンジニアリング</strong>：信頼性の高い企業名を模倣</li>
+              </ul>
+              
+              <div class="warning-text" style="margin-top: 1rem;">
+                ⚠️ <strong>重要：</strong>これらの攻撃は視覚的に判別が困難で、技術的な知識がない一般ユーザーでも簡単に騙される可能性があります。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 対策方法アコーディオン -->
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleWeirdCountermeasuresAccordion()">
+            <h3>🛡️ Unicode攻撃の対策方法</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div id="weirdCountermeasuresAccordionContent" class="accordion-content">
+            <div class="explanation-box" style="background: #f0fff0; border-color: #90ee90; margin: 0;">
+              <h3>🔧 技術的対策</h3>
+              <ul>
+                <li><strong>文字列正規化</strong>：Unicode正規化（NFC、NFD）でゼロ幅文字を除去</li>
+                <li><strong>文字種制限</strong>：許可する文字セットを明確に定義</li>
+                <li><strong>IDN表示</strong>：ブラウザーでPunycodeを表示させる設定</li>
+                <li><strong>ファイル名検証</strong>：制御文字やRTL文字の混入を検出</li>
+                <li><strong>フォント設定</strong>：ゼロ幅文字を可視化するフォント使用</li>
+              </ul>
+              
+              <h3>👤 ユーザー対策</h3>
+              <ul>
+                <li><strong>URL確認</strong>：アドレスバーを注意深く確認する</li>
+                <li><strong>ファイル検証</strong>：ダウンロードしたファイルの拡張子を確認</li>
+                <li><strong>ブックマーク活用</strong>：重要なサイトは手動入力ではなくブックマークから</li>
+                <li><strong>セキュリティソフト</strong>：最新のアンチウイルスソフトを使用</li>
+                <li><strong>デベロッパーツール活用</strong>：疑わしいファイル名をコピーして検証</li>
+              </ul>
+              
+              <h3>🏢 システム対策</h3>
+              <ul>
+                <li><strong>入力値検証</strong>：Webアプリケーションでの厳密な文字種チェック</li>
+                <li><strong>ファイルアップロード制限</strong>：不正文字を含むファイル名の拒否</li>
+                <li><strong>メール フィルタリング</strong>：不正なUnicode文字を含むメールの検出</li>
+                <li><strong>DNS設定</strong>：IDN偽装攻撃に対するDNSフィルタリング</li>
+                <li><strong>定期監査</strong>：システム内の不正ファイル名の定期チェック</li>
+              </ul>
+              
+              <div class="security-note" style="margin-top: 1rem;">
+                💡 <strong>開発者向け：</strong>入力値の検証時は視覚的な類似性だけでなく、Unicode文字の実際のコードポイントを確認することが重要です。
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="tab-tips" class="tab-content">
-        <h2>🔒 セキュリティTips</h2>
-        <ul class="tips-list">
-          <li>クリップボードの読み取りには通常、ユーザー操作が必要です</li>
-          <li>HTTPSページでのみ `navigator.clipboard.readText()` は有効です</li>
-          <li>「貼り付けるだけ」で情報が漏れるケースがあります</li>
-          <li>オートフィルを活用し、コピー＆ペーストは最小限に</li>
-        </ul>
+        <h2>🔒 クリップボードセキュリティ完全ガイド</h2>
+        
+        <div class="explanation-box">
+          <h3>💡 このガイドについて</h3>
+          <p>このタブでは、クリップボード関連の脅威に対する包括的なセキュリティ対策をまとめています。</p>
+          <p><strong>対象：</strong>一般ユーザー、開発者、システム管理者、情報セキュリティ担当者</p>
+          <div class="security-note">
+            🎯 <strong>学習目標：</strong>クリップボード攻撃を理解し、適切な対策を実装・運用できるようになる
+          </div>
+        </div>
+
+        <!-- 一般ユーザー向けTips -->
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleUserTipsAccordion()">
+            <h3>👤 一般ユーザー向けセキュリティ対策</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div id="userTipsAccordionContent" class="accordion-content">
+            <div class="explanation-box" style="background: #f0f8ff; border-color: #87ceeb; margin: 0;">
+              <h3>🔒 基本的な安全対策</h3>
+              <ul>
+                <li><strong>信頼できないサイトでの貼り付け回避</strong>：パスワード、APIキー、個人情報は信頼できるサイトでのみ貼り付け</li>
+                <li><strong>ブラウザーの権限確認</strong>：クリップボードアクセス許可ダイアログは慎重に判断</li>
+                <li><strong>パスワードマネージャー活用</strong>：自動入力機能でコピペのリスクを削減</li>
+                <li><strong>貼り付け前の確認</strong>：重要な情報は貼り付け前に内容を確認</li>
+                <li><strong>定期的なクリップボードクリア</strong>：機密情報使用後はクリップボードを空にする</li>
+              </ul>
+              
+              <h3>⚠️ 危険な行動パターン</h3>
+              <ul>
+                <li><strong>フィッシングサイトでの貼り付け</strong>：URLを確認せずパスワードを貼り付け</li>
+                <li><strong>公共端末での機密情報コピー</strong>：共有PCでのパスワードやカード情報の使用</li>
+                <li><strong>メール・チャットでの直接貼り付け</strong>：暗号化されていない通信での機密情報共有</li>
+                <li><strong>不明なサイトでの「修復」ボタンクリック</strong>：ClickFix攻撃への対応</li>
+                <li><strong>ファイル名の見た目だけで判断</strong>：Unicode攻撃による偽装の見落とし</li>
+              </ul>
+              
+              <h3>🛡️ 推奨ツールと設定</h3>
+              <ul>
+                <li><strong>ブラウザー設定</strong>：不要なサイトからのクリップボードアクセスを制限</li>
+                <li><strong>セキュリティ拡張機能</strong>：クリップボード保護機能を持つ拡張機能の導入</li>
+                <li><strong>アンチウイルスソフト</strong>：クリップボード監視機能を持つ製品の選択</li>
+                <li><strong>2要素認証</strong>：パスワード漏洩時のリスク軽減</li>
+                <li><strong>定期的なパスワード更新</strong>：漏洩リスクを考慮した運用</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 開発者向けTips -->
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleDeveloperTipsAccordion()">
+            <h3>💻 開発者向けセキュリティ実装</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div id="developerTipsAccordionContent" class="accordion-content">
+            <div class="explanation-box" style="background: #f0fff0; border-color: #90ee90; margin: 0;">
+              <h3>🔧 技術的対策の実装</h3>
+              <ul>
+                <li><strong>CSP (Content Security Policy)</strong>：外部への不正通信をブロックするヘッダー設定</li>
+                <li><strong>入力値検証</strong>：pasteイベントで取得したデータの厳密なバリデーション</li>
+                <li><strong>Rate Limiting</strong>：短時間での大量リクエストを制限するAPI設計</li>
+                <li><strong>ログ記録</strong>：異常なクリップボード操作やpaste イベントの監視</li>
+                <li><strong>暗号化</strong>：機密データの暗号化保存と通信</li>
+              </ul>
+              
+              <h3>📝 安全なコーディング慣行</h3>
+              <ul>
+                <li><strong>pasteイベントの最小限使用</strong>：必要最小限での利用とユーザーへの透明性確保</li>
+                <li><strong>データサニタイゼーション</strong>：ユーザー入力の適切な無害化処理</li>
+                <li><strong>HTTPS強制</strong>：全通信の暗号化とMITM攻撃対策</li>
+                <li><strong>エラーハンドリング</strong>：機密情報を含まないエラーメッセージ</li>
+                <li><strong>セキュリティテスト</strong>：定期的な脆弱性スキャンとペネトレーションテスト</li>
+              </ul>
+              
+              <h3>🎓 セキュアな開発例</h3>
+              <ul>
+                <li><strong>Clipboard API の適切な使用</strong>：権限チェックとエラーハンドリング</li>
+                <li><strong>フロントエンド保護</strong>：重要な処理はサーバーサイドで実行</li>
+                <li><strong>監査ログ</strong>：セキュリティイベントの記録と分析</li>
+                <li><strong>依存関係管理</strong>：サードパーティライブラリの脆弱性管理</li>
+                <li><strong>セキュリティヘッダー</strong>：包括的なHTTPセキュリティヘッダーの設定</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- システム管理者向けTips -->
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleAdminTipsAccordion()">
+            <h3>🏢 システム管理者向け運用対策</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div id="adminTipsAccordionContent" class="accordion-content">
+            <div class="explanation-box" style="background: #fff0f5; border-color: #dda0dd; margin: 0;">
+              <h3>🛡️ 組織レベルでの対策</h3>
+              <ul>
+                <li><strong>ポリシー策定</strong>：クリップボード使用に関するセキュリティポリシーの制定</li>
+                <li><strong>従業員教育</strong>：定期的なセキュリティ意識向上トレーニング</li>
+                <li><strong>技術的制御</strong>：エンドポイント保護ソフトによるクリップボード監視</li>
+                <li><strong>ネットワーク監視</strong>：異常な外部通信の検出と分析</li>
+                <li><strong>インシデント対応</strong>：クリップボード関連の情報漏洩対応手順</li>
+              </ul>
+              
+              <h3>📊 監視と分析</h3>
+              <ul>
+                <li><strong>ログ分析</strong>：Webアプリケーションログでの異常検出</li>
+                <li><strong>ネットワーク分析</strong>：DLP (Data Loss Prevention) ツールの活用</li>
+                <li><strong>エンドポイント監視</strong>：不審なクリップボード操作の検出</li>
+                <li><strong>脅威インテリジェンス</strong>：最新の攻撃手法情報の収集</li>
+                <li><strong>定期的監査</strong>：セキュリティ対策の有効性評価</li>
+              </ul>
+              
+              <h3>🚨 インシデント対応</h3>
+              <ul>
+                <li><strong>初動対応</strong>：クリップボード攻撃が疑われる場合の緊急手順</li>
+                <li><strong>証拠保全</strong>：フォレンジック調査のためのデータ保存</li>
+                <li><strong>影響評価</strong>：漏洩したデータの範囲と影響度の評価</li>
+                <li><strong>復旧手順</strong>：システムとデータの安全な復旧プロセス</li>
+                <li><strong>事後対策</strong>：再発防止のための改善施策</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 緊急対応ガイド -->
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleEmergencyAccordion()">
+            <h3>🚨 緊急時対応ガイド</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div id="emergencyAccordionContent" class="accordion-content">
+            <div class="explanation-box" style="background: #fff5f5; border-color: #ffc1c1; margin: 0;">
+              <h3>⚡ クリップボード攻撃を受けた場合</h3>
+              <ol style="line-height: 1.8;">
+                <li><strong>即座に切断</strong>：疑わしいサイトからすぐに離れる</li>
+                <li><strong>クリップボードクリア</strong>：機密情報をクリップボードから削除</li>
+                <li><strong>パスワード変更</strong>：影響を受ける可能性のあるアカウント</li>
+                <li><strong>2要素認証確認</strong>：不審なログイン試行をチェック</li>
+                <li><strong>ネットワーク遮断</strong>：必要に応じてネットワーク接続を切断</li>
+                <li><strong>セキュリティチーム連絡</strong>：組織内での報告と連携</li>
+                <li><strong>証拠保全</strong>：スクリーンショットやログの保存</li>
+                <li><strong>影響調査</strong>：漏洩した可能性のあるデータの特定</li>
+              </ol>
+              
+              <h3>🔍 被害確認の方法</h3>
+              <ul>
+                <li><strong>ブラウザーの開発者ツール</strong>：Networkタブで不審な通信を確認</li>
+                <li><strong>アカウント活動ログ</strong>：各サービスでの異常なアクセス履歴をチェック</li>
+                <li><strong>クレジットカード明細</strong>：不正利用がないかの確認</li>
+                <li><strong>システムログ</strong>：企業環境での異常なアクセスパターン検出</li>
+                <li><strong>メール確認</strong>：アカウント変更通知などの有無</li>
+              </ul>
+              
+              <h3>📞 連絡先と報告</h3>
+              <ul>
+                <li><strong>組織内セキュリティチーム</strong>：社内CSIRT or情報システム部門</li>
+                <li><strong>関連サービス提供者</strong>：影響を受けた可能性のあるサービス</li>
+                <li><strong>法執行機関</strong>：重大な被害の場合はサイバー犯罪相談窓口</li>
+                <li><strong>セキュリティベンダー</strong>：インシデント対応支援の要請</li>
+                <li><strong>保険会社</strong>：サイバー保険加入時の連絡</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 最新脅威情報 -->
+        <div class="accordion-section">
+          <div class="accordion-header" onclick="toggleThreatInfoAccordion()">
+            <h3>🔍 最新脅威動向と対策トレンド</h3>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div id="threatInfoAccordionContent" class="accordion-content">
+            <div class="explanation-box" style="background: #f8f8ff; border-color: #dcd0ff; margin: 0;">
+              <h3>📈 2024年のクリップボード攻撃トレンド</h3>
+              <ul>
+                <li><strong>AI生成フィッシング</strong>：より巧妙化するソーシャルエンジニアリング手法</li>
+                <li><strong>モバイル端末への拡大</strong>：スマートフォン・タブレットでの攻撃増加</li>
+                <li><strong>ゼロクリック攻撃</strong>：ユーザー操作を必要としない高度な攻撃</li>
+                <li><strong>サプライチェーン攻撃</strong>：信頼できるソフトウェアの悪用</li>
+                <li><strong>暗号資産狙い撃ち</strong>：ウォレットアドレスやシードフレーズの狙い撃ち</li>
+              </ul>
+              
+              <h3>🛡️ 新しい防御技術</h3>
+              <ul>
+                <li><strong>機械学習ベースの検知</strong>：異常な貼り付けパターンの自動検出</li>
+                <li><strong>ゼロトラストアーキテクチャ</strong>：すべての通信を検証する設計</li>
+                <li><strong>行動分析</strong>：ユーザーの正常な行動パターンとの比較</li>
+                <li><strong>リアルタイム脅威インテリジェンス</strong>：最新攻撃手法の即座な対応</li>
+                <li><strong>分離実行環境</strong>：仮想環境での安全な操作</li>
+              </ul>
+              
+              <h3>🎯 今後予想される脅威</h3>
+              <ul>
+                <li><strong>量子コンピューティング対応</strong>：既存暗号化の突破と対策</li>
+                <li><strong>IoTデバイス連携攻撃</strong>：複数デバイス間でのクリップボード共有悪用</li>
+                <li><strong>VR/AR環境での攻撃</strong>：新しいインターフェースでの脅威</li>
+                <li><strong>生体認証の回避</strong>：バイオメトリクス技術への対応</li>
+                <li><strong>クラウドサービス悪用</strong>：合法的サービスを使った攻撃手法</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- チェックリスト -->
+        <div class="explanation-box" style="background: #f0f8f0; border-color: #98fb98;">
+          <h3>✅ セキュリティチェックリスト</h3>
+          <div class="button-row">
+            <button onclick="showUserChecklist()" title="個人ユーザー向けチェック項目">👤 個人用チェック</button>
+            <button onclick="showDeveloperChecklist()" title="開発者向けチェック項目">💻 開発者用チェック</button>
+            <button onclick="showAdminChecklist()" title="システム管理者向けチェック項目">🏢 管理者用チェック</button>
+            <button onclick="resetTipsDemo()" class="secondary-button">🔄 リセット</button>
+          </div>
+        </div>
+
+        <div id="tipsOutput" class="output-box">
+          <div class="message info">📋 上のボタンからセキュリティチェックリストを表示できます。自身の役割に応じて確認してください。</div>
+        </div>
       </section>
     </main>
 

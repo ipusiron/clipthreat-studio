@@ -116,6 +116,11 @@ window.addEventListener("DOMContentLoaded", () => {
     updateTutorialStep(2);
   };
 
+  window.resetBasicDemo = function() {
+    inputArea.value = '';
+    outputBox.innerHTML = '<div class="message info">📋 デモをリセットしました。基本的なクリップボード操作を体験してください。</div>';
+  };
+
   window.resetTutorial = function() {
     document.querySelectorAll('.step').forEach(step => {
       step.classList.remove('completed', 'active');

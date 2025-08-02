@@ -44,6 +44,12 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  window.resetSniffDemo = function() {
+    pasteCount = 0;
+    sniffInput.value = '';
+    sniffLog.innerHTML = '<div class="message info">📋 デモをリセットしました。上の入力欄に何かを貼り付けて、pasteイベントスニッフィングを体験してください。</div>';
+  };
+
   window.resetSniffTutorial = function() {
     document.querySelectorAll('#tab-sniff .step').forEach(step => {
       step.classList.remove('completed', 'active');
