@@ -415,6 +415,157 @@ button[title]:hover::after {
   color: #0d47a1;
 }
 
+/* Watch Mode Styles */
+.control-panel {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.watch-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.watch-toggle input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.interval-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.interval-selector select {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: auto;
+}
+
+.secondary-button {
+  background-color: #6c757d !important;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+}
+
+.secondary-button:hover {
+  background-color: #5a6268 !important;
+}
+
+.stats-panel {
+  background: #e9ecef;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.watch-log {
+  max-height: 400px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #dee2e6;
+}
+
+.log-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+}
+
+.log-detection {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+}
+
+.log-error {
+  background: #f8d7da;
+  border-left: 4px solid #dc3545;
+}
+
+.log-start {
+  background: #d1edff;
+  border-left: 4px solid #0d6efd;
+}
+
+.log-stop {
+  background: #f8d7da;
+  border-left: 4px solid #dc3545;
+}
+
+.log-info {
+  background: #e2e3e5;
+  border-left: 4px solid #6c757d;
+}
+
+.log-time {
+  font-size: 0.8rem;
+  color: #6c757d;
+  min-width: 80px;
+  font-family: monospace;
+}
+
+.log-icon {
+  font-size: 1.1rem;
+  min-width: 24px;
+}
+
+.log-message {
+  flex: 1;
+  word-break: break-word;
+}
+
+.log-message code {
+  background: #f8f9fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+}
+
+.preview-content {
+  background: rgba(40, 167, 69, 0.1);
+  padding: 0.3rem 0.5rem;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  word-break: break-all;
+  border-left: 3px solid #28a745;
+  border: 1px solid #28a745;
+}
+
+.log-empty {
+  text-align: center;
+  color: #6c757d;
+  padding: 2rem;
+  font-style: italic;
+}
+
+.warning-text {
+  color: #dc3545;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
 /* 警告メッセージ */
 .warning {
   color: #b20000;

@@ -102,11 +102,88 @@
 
       <section id="tab-watch" class="tab-content">
         <h2>🔍 監視モード</h2>
-        <label
-          ><input type="checkbox" id="watchToggle" />
-          自動監視を有効にする（1秒ごと）</label
-        >
-        <div id="watchLog" class="output-box"></div>
+        
+        <div class="explanation-box">
+          <h3>💡 この機能について</h3>
+          <p>クリップボードの内容を定期的に監視し、変化を検出します。</p>
+          <p class="warning-text">⚠️ これは悪用されると、ユーザーがコピーした情報を盗み見ることが可能です。</p>
+          <div class="permission-notice">
+            <strong>🔒 重要な注意事項：</strong><br>
+            1. 初回使用時にブラウザーから許可ダイアログが表示されます。<strong>「許可」をクリック</strong>してください。<br>
+            2. 監視中はこのタブをアクティブにしておいてください。他のタブやアプリに切り替えると監視が一時停止します。<br>
+            3. ローカルファイル(file://)での実行は制限があります。HTTPサーバーでの実行を推奨します。
+          </div>
+        </div>
+        
+        <div class="tutorial-box">
+          <h3>🎯 実際に試してみよう！</h3>
+          <div class="tutorial-steps">
+            <div class="step" id="watch-step1">
+              <span class="step-number">1</span>
+              <div class="step-content">
+                <p>まず「📡 自動監視を有効にする」チェックボックスをオンにして監視を開始しましょう</p>
+                <div class="permission-notice">
+                  <strong>⚠️ 重要：</strong>ブラウザーから「クリップボードへのアクセスを許可しますか？」というダイアログが表示されます。<br>
+                  <strong>「許可」をクリック</strong>してください。
+                </div>
+              </div>
+            </div>
+            <div class="step" id="watch-step2">
+              <span class="step-number">2</span>
+              <div class="step-content">
+                <p>他のアプリ（メモ帳、ブラウザーなど）で何かテキストをコピーしてみましょう</p>
+                <small>例：メモ帳に「テスト文字列」と入力してCtrl+A、Ctrl+C でコピー</small>
+              </div>
+            </div>
+            <div class="step" id="watch-step3">
+              <span class="step-number">3</span>
+              <div class="step-content">
+                <p>ClipThreat Studioの「監視モード」タブに戻ると、下のログにクリップボード変化が記録されているか確認</p>
+                <small>💡 タブがアクティブでないと一部ブラウザーでは検出できない場合があります</small>
+              </div>
+            </div>
+            <div class="step" id="watch-step4">
+              <span class="step-number">4</span>
+              <div class="step-content">
+                <p>異なる種類のデータ（URL、メールアドレスなど）もコピーして、タイプ判別機能を確認してみましょう</p>
+                <small>例：https://example.com、test@example.com など</small>
+              </div>
+            </div>
+            <div class="step" id="watch-step5">
+              <span class="step-number">5</span>
+              <div class="step-content">
+                <p>監視間隔を変更して、検出の反応速度の違いを体験してみましょう</p>
+                <small>推奨：0.5秒にして素早い反応を確認後、5秒にして違いを体感</small>
+              </div>
+            </div>
+          </div>
+          <button class="tutorial-reset" onclick="resetWatchTutorial()">🔄 チュートリアルをリセット</button>
+        </div>
+        
+        <div class="control-panel">
+          <label class="watch-toggle">
+            <input type="checkbox" id="watchToggle" />
+            <span>📡 自動監視を有効にする</span>
+          </label>
+          
+          <div class="interval-selector">
+            <label>監視間隔：</label>
+            <select id="watchInterval">
+              <option value="500">0.5秒</option>
+              <option value="1000" selected>1秒</option>
+              <option value="2000">2秒</option>
+              <option value="5000">5秒</option>
+            </select>
+          </div>
+          
+          <button onclick="clearWatchLog()" class="secondary-button">🗑️ ログをクリア</button>
+        </div>
+        
+        <div class="stats-panel">
+          <span id="watchStats">📊 監視状態：停止中 | 検出数：0</span>
+        </div>
+        
+        <div id="watchLog" class="output-box watch-log"></div>
       </section>
 
       <section id="tab-sniff" class="tab-content">
