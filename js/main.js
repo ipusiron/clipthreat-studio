@@ -23,3 +23,36 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+// ヘルプモーダル制御
+window.showHelpModal = function() {
+  const helpModal = document.getElementById('helpModal');
+  helpModal.style.display = 'flex';
+  
+  // Escapeキーでモーダルを閉じる
+  document.addEventListener('keydown', handleEscapeKey);
+  
+  // モーダル外クリックで閉じる
+  helpModal.addEventListener('click', handleModalOutsideClick);
+};
+
+window.closeHelpModal = function() {
+  const helpModal = document.getElementById('helpModal');
+  helpModal.style.display = 'none';
+  
+  // イベントリスナーを削除
+  document.removeEventListener('keydown', handleEscapeKey);
+  helpModal.removeEventListener('click', handleModalOutsideClick);
+};
+
+function handleEscapeKey(event) {
+  if (event.key === 'Escape') {
+    closeHelpModal();
+  }
+}
+
+function handleModalOutsideClick(event) {
+  if (event.target === event.currentTarget) {
+    closeHelpModal();
+  }
+}

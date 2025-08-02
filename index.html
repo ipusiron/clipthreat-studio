@@ -9,8 +9,13 @@
   </head>
   <body>
     <header>
-      <h1>🧪 ClipThreat Studio</h1>
-      <p>クリップボード悪用攻撃の可視化＆体験ツール</p>
+      <div class="header-content">
+        <div class="header-title">
+          <h1>🧪 ClipThreat Studio</h1>
+          <button class="help-button" onclick="showHelpModal()" title="ヘルプ・使い方を表示">❓</button>
+        </div>
+        <p>クリップボード悪用攻撃の可視化＆体験ツール</p>
+      </div>
     </header>
 
     <nav class="tab-nav">
@@ -972,6 +977,67 @@
         </div>
       </section>
     </main>
+
+    <!-- ヘルプモーダル -->
+    <div id="helpModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>❓ ClipThreat Studio ヘルプ</h2>
+          <button class="modal-close" onclick="closeHelpModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="help-section">
+            <h3>🎯 このツールについて</h3>
+            <p>ClipThreat Studioは、クリップボード関連のセキュリティ脅威を体験・学習するための教育ツールです。</p>
+          </div>
+          
+          <div class="help-section">
+            <h3>📋 各タブの機能</h3>
+            <ul>
+              <li><strong>📋 基本操作</strong>：クリップボードAPIの基本的な読み書き操作を体験</li>
+              <li><strong>🔍 監視モード</strong>：クリップボード内容の自動監視機能を体験</li>
+              <li><strong>🎭 pasteイベントスニッフィング</strong>：貼り付け内容の傍受攻撃を体験</li>
+              <li><strong>🚨 ClickFix攻撃</strong>：偽の修復ボタンによる攻撃手法を体験</li>
+              <li><strong>🧲 自動送信</strong>：貼り付けと同時に外部送信される攻撃を体験</li>
+              <li><strong>🧪 文字細工</strong>：Unicode文字を悪用した攻撃手法を体験</li>
+              <li><strong>🔒 セキュリティTips</strong>：包括的なセキュリティ対策ガイド</li>
+            </ul>
+          </div>
+          
+          <div class="help-section">
+            <h3>🔧 使い方のコツ</h3>
+            <ul>
+              <li><strong>チュートリアル</strong>：各タブにある「実際に試してみよう！」から始めてください</li>
+              <li><strong>ステップ進行</strong>：OKボタンを押してステップを進めながら学習できます</li>
+              <li><strong>リセット機能</strong>：各タブのリセットボタンで初期状態に戻せます</li>
+              <li><strong>詳細調査</strong>：文字細工タブではWeirdString Inspectorと連携できます</li>
+            </ul>
+          </div>
+          
+          <div class="help-section">
+            <h3>⚠️ 注意事項</h3>
+            <ul>
+              <li>このツールは<strong>教育目的</strong>でのみ使用してください</li>
+              <li>実際の攻撃には使用しないでください</li>
+              <li>HTTPS環境でのみ正常に動作します</li>
+              <li>ブラウザーによってはクリップボード権限の許可が必要です</li>
+            </ul>
+          </div>
+          
+          <div class="help-section">
+            <h3>🔗 関連リンク</h3>
+            <ul>
+              <li><a href="https://github.com/ipusiron/clipthreat-studio" target="_blank">GitHubリポジトリ</a></li>
+              <li><a href="https://ipusiron.github.io/weirdstring-inspector/" target="_blank">WeirdString Inspector</a></li>
+              <li><a href="https://akademeia.info/?page_id=42163" target="_blank">生成AIで作るセキュリティツール100</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button onclick="closeHelpModal()" class="button">閉じる</button>
+        </div>
+      </div>
+    </div>
 
     <footer>
       <div class="footer">

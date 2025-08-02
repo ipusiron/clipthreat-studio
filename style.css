@@ -14,6 +14,29 @@ header {
   padding: 1.5em 1em;
 }
 
+.header-content {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 860px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.header-title .help-button {
+  position: absolute;
+  right: 0;
+}
+
+.help-button[title]:hover::after {
+  display: none;
+}
+
 h1 {
   margin: 0;
   font-size: 2em;
@@ -21,6 +44,35 @@ h1 {
 
 p {
   margin: 0.5em 0;
+}
+
+/* ヘルプボタン */
+.help-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  max-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  padding: 0 !important;
+  line-height: 1;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.help-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
 }
 
 /* タブナビゲーション */
@@ -1074,4 +1126,124 @@ footer a {
 
 .secure-connection {
   color: #ce9178;
+}
+
+/* モーダルスタイル */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  background: #1976d2;
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 !important;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  max-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.3s;
+  line-height: 1;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.help-section {
+  margin-bottom: 1.5rem;
+}
+
+.help-section:last-child {
+  margin-bottom: 0;
+}
+
+.help-section h3 {
+  margin: 0 0 0.75rem 0;
+  color: #1976d2;
+  font-size: 1.1rem;
+}
+
+.help-section p {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.help-section ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  text-align: left;
+}
+
+.help-section li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.help-section a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.help-section a:hover {
+  text-decoration: underline;
 }
