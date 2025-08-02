@@ -34,14 +34,68 @@
     <main>
       <section id="tab-clipboard" class="tab-content active">
         <h2>📋 クリップボード基本操作</h2>
+        
+        <div class="explanation-box">
+          <h3>💡 使い方</h3>
+          <ul>
+            <li><strong>クリップボードから読み取る</strong>：現在クリップボードに保存されている内容を表示します</li>
+            <li><strong>クリップボードに書き込む</strong>：テキストエリアの内容をクリップボードにコピーします</li>
+            <li><strong>クリップボードをクリア</strong>：クリップボードを空にします</li>
+          </ul>
+          <div class="security-note">
+            🔒 <strong>セキュリティ注意：</strong>クリップボードの読み取りはユーザーのプライバシーに関わるため、ブラウザーは必ず許可を求めます。
+          </div>
+        </div>
+        
+        <div class="tutorial-box">
+          <h3>🎯 実際に試してみよう！</h3>
+          <div class="tutorial-steps">
+            <div class="step" id="step1">
+              <span class="step-number">1</span>
+              <div class="step-content">
+                <p>まず、このテキストを選択してコピーしてみましょう：</p>
+                <code class="sample-text" onclick="selectText(this)">クリップボードの実験テキストです🧪</code>
+                <small>↑ クリックして選択 → Ctrl+Cでコピー</small>
+              </div>
+            </div>
+            <div class="step" id="step2">
+              <span class="step-number">2</span>
+              <div class="step-content">
+                <p>次に「📋 クリップボードから読み取る」ボタンをクリックして、コピーした内容を確認しましょう</p>
+                <div class="permission-notice">
+                  <strong>⚠️ 重要：</strong>ブラウザーから「クリップボードへのアクセスを許可しますか？」というダイアログが表示されます。<br>
+                  これはセキュリティ上の保護機能です。今回は実験のため<strong>「許可」をクリック</strong>してください。
+                </div>
+              </div>
+            </div>
+            <div class="step" id="step3">
+              <span class="step-number">3</span>
+              <div class="step-content">
+                <p>テキストエリアに好きな文字を入力して「✍️ クリップボードに書き込む」をクリック</p>
+              </div>
+            </div>
+            <div class="step" id="step4">
+              <span class="step-number">4</span>
+              <div class="step-content">
+                <p>他のアプリ（メモ帳など）やブラウザーの検索欄にて、Ctrl+Vで貼り付けて確認！</p>
+              </div>
+            </div>
+          </div>
+          <button class="tutorial-reset" onclick="resetTutorial()">🔄 チュートリアルをリセット</button>
+        </div>
+        
         <textarea
           id="clipboardInput"
           rows="4"
           placeholder="ここにテキストを入力してコピー・ペースト実験..."
         ></textarea>
         <div class="button-row">
-          <button onclick="readClipboard()">読み取る</button>
-          <button onclick="writeClipboard()">書き込む</button>
+          <button onclick="readClipboard()" title="クリップボードの現在の内容を表示">📋 クリップボードから読み取る</button>
+          <button onclick="writeClipboard()" title="テキストエリアの内容をクリップボードにコピー">✍️ クリップボードに書き込む</button>
+          <button onclick="clearClipboard()" title="クリップボードを空にする">🗑️ クリップボードをクリア</button>
+        </div>
+        <div class="info-text">
+          <small>💡 Ctrl+Enterで書き込みも可能です</small>
         </div>
         <div id="clipboardOutput" class="output-box"></div>
       </section>

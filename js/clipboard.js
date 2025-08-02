@@ -1,32 +1,155 @@
-// clipboard.js - クリップボードの読み取り・書き込み処理
-
 window.addEventListener("DOMContentLoaded", () => {
   const inputArea = document.getElementById("clipboardInput");
   const outputBox = document.getElementById("clipboardOutput");
 
-  // 書き込み処理
-  window.writeClipboard = function () {
-    const text = inputArea.value;
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function showMessage(message, type = 'info') {
+    const icons = {
+      success: '✅',
+      error: '❌',
+      warning: '⚠️',
+      info: '📋'
+    };
+    const icon = icons[type] || icons.info;
+    outputBox.innerHTML = `<div class="message ${type}">${icon} ${message}</div>`;
+  }
+
+  function showClipboardContent(text, action) {
+    const timestamp = new Date().toLocaleTimeString('ja-JP');
+    const escapedText = escapeHtml(text);
+    const preview = text.length > 100 ? escapedText.substring(0, 100) + '...' : escapedText;
+    
+    outputBox.innerHTML = `
+      <div class="clipboard-result">
+        <div class="action-info">
+          <span class="action">${action}</span>
+          <span class="timestamp">${timestamp}</span>
+        </div>
+        <div class="content-info">
+          <div class="preview"><code>${preview}</code></div>
+          <div class="meta">
+            <span>文字数: ${text.length}</span>
+            <span>行数: ${text.split('\n').length}</span>
+          </div>
+        </div>
+        <div class="action-explanation">
+          ${action === 'クリップボードに書き込みました' ? 
+            '<small>✔️ 他のアプリでCtrl+Vで貼り付け可能です</small>' :
+            '<small>✔️ テキストエリアに反映されました</small>'}
+        </div>
+      </div>
+    `;
+  }
+
+  window.writeClipboard = async function () {
+    const text = inputArea.value.trim();
     if (!text) {
-      outputBox.innerHTML = "⚠️ 書き込むテキストが空です。";
+      showMessage('書き込むテキストを入力してください。', 'warning');
+      inputArea.focus();
       return;
     }
 
-    navigator.clipboard.writeText(text).then(() => {
-      outputBox.innerHTML = `✅ テキストをクリップボードにコピーしました：<br><code>${text}</code>`;
-    }).catch(err => {
-      outputBox.innerHTML = "❌ クリップボードへの書き込みに失敗しました。ブラウザの制限がある可能性があります。";
-      console.error("Clipboard write failed:", err);
-    });
+    try {
+      await navigator.clipboard.writeText(text);
+      showClipboardContent(text, 'クリップボードに書き込みました');
+      inputArea.select();
+    } catch (err) {
+      showMessage('クリップボードへの書き込みに失敗しました。HTTPSで接続されているか確認してください。', 'error');
+      console.error('Clipboard write failed:', err);
+    }
   };
 
-  // 読み取り処理
-  window.readClipboard = function () {
-    navigator.clipboard.readText().then(text => {
-      outputBox.innerHTML = `📋 クリップボードの現在の内容：<br><code>${text}</code>`;
-    }).catch(err => {
-      outputBox.innerHTML = "❌ クリップボードの読み取りに失敗しました。ユーザー操作が必要な場合があります。";
-      console.error("Clipboard read failed:", err);
-    });
+  window.readClipboard = async function () {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (!text) {
+        showMessage('クリップボードは空です。', 'info');
+        return;
+      }
+      showClipboardContent(text, 'クリップボードから読み取りました');
+      inputArea.value = text;
+    } catch (err) {
+      if (err.name === 'NotAllowedError') {
+        showMessage('クリップボードの読み取り権限がありません。「許可」をクリックしてください。<br><small>※これはブラウザーのセキュリティ機能で、悪意あるサイトが勝手にクリップボードを読み取ることを防いでいます。</small>', 'error');
+      } else if (err.name === 'SecurityError') {
+        showMessage('セキュリティエラー：HTTPSで接続されているか確認してください。<br><small>クリップボードAPIはHTTPS接続が必須です。</small>', 'error');
+      } else {
+        showMessage('クリップボードの読み取りに失敗しました。ブラウザーの許可ダイアログで「許可」を選択してください。', 'error');
+      }
+      console.error('Clipboard read failed:', err);
+    }
   };
+
+  window.clearClipboard = async function () {
+    try {
+      await navigator.clipboard.writeText('');
+      showMessage('クリップボードをクリアしました。', 'success');
+      inputArea.value = '';
+    } catch (err) {
+      showMessage('クリップボードのクリアに失敗しました。', 'error');
+      console.error('Clipboard clear failed:', err);
+    }
+  };
+
+  inputArea.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+      writeClipboard();
+    }
+  });
+
+  window.selectText = function(element) {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    element.classList.add('selected');
+    setTimeout(() => {
+      element.classList.remove('selected');
+    }, 2000);
+    
+    updateTutorialStep(2);
+  };
+
+  window.resetTutorial = function() {
+    document.querySelectorAll('.step').forEach(step => {
+      step.classList.remove('completed', 'active');
+    });
+    document.getElementById('step1').classList.add('active');
+    inputArea.value = '';
+    outputBox.innerHTML = '<div class="message info">📋 チュートリアルをリセットしました。ステップ1から始めましょう！</div>';
+  };
+
+  function updateTutorialStep(stepNumber) {
+    document.querySelectorAll('.step').forEach((step, index) => {
+      step.classList.remove('active');
+      if (index < stepNumber - 1) {
+        step.classList.add('completed');
+      }
+    });
+    
+    const currentStep = document.getElementById(`step${stepNumber}`);
+    if (currentStep) {
+      currentStep.classList.add('active');
+    }
+  }
+
+  const originalReadClipboard = window.readClipboard;
+  window.readClipboard = async function() {
+    await originalReadClipboard();
+    updateTutorialStep(3);
+  };
+
+  const originalWriteClipboard = window.writeClipboard;
+  window.writeClipboard = async function() {
+    await originalWriteClipboard();
+    updateTutorialStep(4);
+  };
+
+  document.getElementById('step1').classList.add('active');
 });

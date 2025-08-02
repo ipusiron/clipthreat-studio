@@ -17,7 +17,7 @@ window.addEventListener("DOMContentLoaded", () => {
       `;
     }).catch(err => {
       logArea.innerHTML = `
-        ❌ コピーに失敗しました。ブラウザの制限またはユーザー操作が必要です。
+        ❌ コピーに失敗しました。ブラウザーの制限またはユーザー操作が必要です。
       `;
       console.error("Clipboard write failed:", err);
     });

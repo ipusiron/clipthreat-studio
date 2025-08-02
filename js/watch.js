@@ -20,7 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
             lastClipboardContent = current;
           }
         } catch (err) {
-          logArea.innerHTML += "<br>❌ 監視中にエラーが発生しました（ブラウザ制限の可能性）";
+          logArea.innerHTML += "<br>❌ 監視中にエラーが発生しました（ブラウザー制限の可能性）";
           console.error("Clipboard read error:", err);
         }
       }, 1000);
