@@ -1,0 +1,153 @@
+/* ベース設定 */
+body {
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+  color: #222;
+  text-align: center;
+}
+
+header {
+  background-color: #222;
+  color: #fff;
+  padding: 1.5em 1em;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2em;
+}
+
+p {
+  margin: 0.5em 0;
+}
+
+/* タブナビゲーション */
+.tab-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: #eee;
+  padding: 0.5em;
+}
+
+.tab-button {
+  background: #ddd;
+  border: none;
+  padding: 0.5em 1em;
+  margin: 0.3em;
+  font-size: 0.95em;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.tab-button:hover {
+  background: #ccc;
+}
+
+.tab-button.active {
+  background: #4285f4;
+  color: white;
+}
+
+/* メインコンテンツ */
+main {
+  max-width: 860px;
+  margin: 2em auto;
+  padding: 0 1em;
+  text-align: left;
+}
+
+/* タブの中身 */
+.tab-content {
+  display: none;
+  background: white;
+  border-radius: 10px;
+  padding: 1.5em;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* テキストエリア・入力欄 */
+textarea,
+input[type="text"],
+input[type="search"],
+input[type="url"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.6em;
+  margin: 0.5em 0 1em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+/* ボタン */
+.button-row {
+  margin: 1em 0;
+}
+
+button {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  margin: 0.5em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #3367d6;
+}
+
+/* 出力エリア */
+.output-box {
+  background: #f9f9f9;
+  border-left: 5px solid #4285f4;
+  padding: 1em;
+  margin-top: 1em;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border-radius: 5px;
+}
+
+/* 警告メッセージ */
+.warning {
+  color: #b20000;
+  font-weight: bold;
+  background: #fff0f0;
+  border: 1px solid #faa;
+  padding: 0.75em;
+  border-radius: 5px;
+  margin: 1em 0;
+}
+
+/* Tipsリスト */
+.tips-list {
+  list-style: disc;
+  padding-left: 2em;
+}
+
+/* フッター */
+footer {
+  background: #eee;
+  padding: 1em;
+  font-size: 0.9em;
+  margin-top: 3em;
+}
+
+footer a {
+  color: #4285f4;
+  text-decoration: none;
+}

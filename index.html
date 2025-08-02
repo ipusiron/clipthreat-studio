@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClipThreat Studio</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  </head>
+  <body>
+    <header>
+      <h1>🧪 ClipThreat Studio</h1>
+      <p>クリップボード悪用攻撃の可視化＆体験ツール</p>
+    </header>
+
+    <nav class="tab-nav">
+      <button class="tab-button active" data-tab="tab-clipboard">
+        📋 基本操作
+      </button>
+      <button class="tab-button" data-tab="tab-watch">🔍 監視モード</button>
+      <button class="tab-button" data-tab="tab-sniff">
+        🎭 pasteスニッフィング
+      </button>
+      <button class="tab-button" data-tab="tab-clickfix">
+        🚨 ClickFix攻撃
+      </button>
+      <button class="tab-button" data-tab="tab-autopaste">🧲 自動送信</button>
+      <button class="tab-button" data-tab="tab-weirdchar">🧪 文字細工</button>
+      <button class="tab-button" data-tab="tab-tips">
+        🔒 セキュリティTips
+      </button>
+    </nav>
+
+    <main>
+      <section id="tab-clipboard" class="tab-content active">
+        <h2>📋 クリップボード基本操作</h2>
+        <textarea
+          id="clipboardInput"
+          rows="4"
+          placeholder="ここにテキストを入力してコピー・ペースト実験..."
+        ></textarea>
+        <div class="button-row">
+          <button onclick="readClipboard()">読み取る</button>
+          <button onclick="writeClipboard()">書き込む</button>
+        </div>
+        <div id="clipboardOutput" class="output-box"></div>
+      </section>
+
+      <section id="tab-watch" class="tab-content">
+        <h2>🔍 監視モード</h2>
+        <label
+          ><input type="checkbox" id="watchToggle" />
+          自動監視を有効にする（1秒ごと）</label
+        >
+        <div id="watchLog" class="output-box"></div>
+      </section>
+
+      <section id="tab-sniff" class="tab-content">
+        <h2>🎭 pasteスニッフィング</h2>
+        <input id="sniffInput" placeholder="ここに貼り付けてください" />
+        <div id="sniffLog" class="output-box"></div>
+      </section>
+
+      <section id="tab-clickfix" class="tab-content">
+        <h2>🚨 ClickFix攻撃シミュレーション</h2>
+        <p class="warning">
+          あなたのシステムに問題が検出されました。今すぐ修復してください。
+        </p>
+        <button onclick="simulateClickFix()">✅ 修復する（推奨）</button>
+        <div id="clickfixLog" class="output-box"></div>
+      </section>
+
+      <section id="tab-autopaste" class="tab-content">
+        <h2>🧲 自動ペースト送信デモ</h2>
+        <input
+          id="autoInput"
+          placeholder="ここにペーストすると即送信されます"
+        />
+        <div id="autoLog" class="output-box"></div>
+      </section>
+
+      <section id="tab-weirdchar" class="tab-content">
+        <h2>🧪 不正文字列注入デモ</h2>
+        <p>
+          以下のボタンでゼロ幅スペースや右から左文字を含む文字列をコピーできます。
+        </p>
+        <button onclick="copyWeirdText()">不正文字列をコピーする</button>
+        <div id="weirdOutput" class="output-box"></div>
+      </section>
+
+      <section id="tab-tips" class="tab-content">
+        <h2>🔒 セキュリティTips</h2>
+        <ul class="tips-list">
+          <li>クリップボードの読み取りには通常、ユーザー操作が必要です</li>
+          <li>HTTPSページでのみ `navigator.clipboard.readText()` は有効です</li>
+          <li>「貼り付けるだけ」で情報が漏れるケースがあります</li>
+          <li>オートフィルを活用し、コピー＆ペーストは最小限に</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer">
+        🔗 GitHubリポジトリはこちら（
+        <a href="https://github.com/ipusiron/clipthreat-studio" target="_blank"
+          >ipusiron/clipthreat-studio</a
+        >
+        ）
+      </div>
+    </footer>
+	
+    <script src="js/main.js"></script>
+    <script src="js/clipboard.js"></script>
+    <script src="js/watch.js"></script>
+    <script src="js/sniff.js"></script>
+    <script src="js/clickfix.js"></script>
+    <script src="js/autopaste.js"></script>
+    <script src="js/weirdchar.js"></script>
+    <script src="js/tips.js"></script>
+  </body>
+</html>
