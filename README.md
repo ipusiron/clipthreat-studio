@@ -1,3 +1,41 @@
+<!--
+---
+id: day033
+slug: clipthreat-studio
+
+title: "ClipThreat Studio"
+
+subtitle_ja: "クリップボード悪用攻撃の体験ツール"
+subtitle_en: "Clipboard Exploitation Attack Demonstration Tool"
+
+description_ja: "JavaScriptによるクリップボードAPIの悪用手法を再現し、クリック1つで体験できる「クリップボード悪用攻撃の可視化＆体験ツール」です。読み取り・書き込み・paste監視・ClickFix誘導・Unicode文字細工など、心理操作と技術的悪用を組み合わせた脅威を複数タブ構成で体験できます。"
+description_en: "An interactive security education tool that demonstrates clipboard API exploitation techniques through a web interface. Experience various clipboard threats including read/write operations, paste monitoring, ClickFix attacks, and Unicode manipulation in a safe, controlled environment."
+
+category_ja:
+  - Webセキュリティ
+  - ソーシャルエンジニアリング
+category_en:
+  - Web Security
+  - Social Engineering
+
+difficulty: 3
+
+tags:
+  - clipboard
+  - javascript
+  - security
+  - clickfix
+  - unicode
+  - phishing
+  - web-security
+
+repo_url: "https://github.com/ipusiron/clipthreat-studio"
+demo_url: "https://ipusiron.github.io/clipthreat-studio/"
+
+hub: true
+---
+-->
+
 # ClipThreat Studio - クリップボード悪用攻撃の体験ツール
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/ipusiron/clipthreat-studio?style=social)

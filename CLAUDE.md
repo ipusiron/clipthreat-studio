@@ -19,8 +19,14 @@ The project consists of a single-page application with tab-based navigation:
   - `sniff.js`: Paste event interception
   - `clickfix.js`: ClickFix attack simulation
   - `autopaste.js`: Automatic paste and submit demonstration
-  - `weirdchar.js`: Unicode manipulation demonstrations
+  - `weirdchar.js`: Unicode manipulation demonstrations (integrates with WeirdString Inspector)
   - `tips.js`: Security tips and educational content
+
+## External Integration
+
+The weirdchar.js module integrates with WeirdString Inspector for detailed Unicode analysis:
+- URL format: `https://ipusiron.github.io/weirdstring-inspector/?text={encoded}&source=clipthreat-studio&attack_type={type}`
+- Attack types: ゼロ幅スペース攻撃, RTL文字拡張子偽装, スクリプト混在攻撃, 同形異義文字攻撃
 
 ## Development Commands
 
