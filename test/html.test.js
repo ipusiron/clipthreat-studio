@@ -19,9 +19,9 @@ test('CSP, referrer, modules and noscript; no inline execution or styles', () =>
   }
 });
 
-test('seven accessible tabs, eleven keyboard accordions and a labelled dialog', () => {
-  assert.equal((html.match(/role="tab"/g) || []).length, 7);
-  assert.equal((html.match(/role="tabpanel"/g) || []).length, 7);
+test('eight accessible tabs, eleven keyboard accordions and a labelled dialog', () => {
+  assert.equal((html.match(/role="tab"/g) || []).length, 8);
+  assert.equal((html.match(/role="tabpanel"/g) || []).length, 8);
   assert.equal((html.match(/aria-expanded="false"/g) || []).length, 11);
   assert.match(html, /role="dialog" aria-modal="true" aria-labelledby="helpTitle"/);
   assert.match(html, /class="modal-close" aria-label="閉じる"/);

@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { checkPasteText, classifyPasteCharacter, PASTE_CHECK_LIMIT, buildInspectorUrl } from '../js/shared.js';
 
 const cases = [
@@ -52,4 +53,12 @@ test('paste-check integration uses only a fragment', () => {
   assert.equal(url.search, '');
   assert.ok(url.hash.startsWith('#text='));
   assert.equal(new URLSearchParams(url.hash.slice(1)).get('attack_type'), 'paste-check');
+});
+
+test('paste UI uses safe text, explicit reading and read-only reset installation', () => {
+  const source = readFileSync(new URL('../js/pastecheck.js', import.meta.url), 'utf8');
+  assert.match(source, /safe.textContent = data.safeText/);
+  assert.match(source, /readOnly: true/);
+  assert.match(source, /generation !== timers.generation/);
+  assert.doesNotMatch(source, /innerHTML|writeText|fetch\(|XMLHttpRequest|sendBeacon/);
 });

@@ -53,7 +53,7 @@ export function createDemoTimers() {
   };
 }
 
-export function installDemoResets(names, region, before = () => {}) {
+export function installDemoResets(names, region, before = () => {}, { readOnly = false } = {}) {
   const tab = region.closest('.tab-content');
   region.setAttribute('aria-live', 'polite');
   for (const name of names) {
@@ -64,7 +64,7 @@ export function installDemoResets(names, region, before = () => {}) {
       tab.querySelectorAll('textarea').forEach(input => { input.value = ''; });
       tab.querySelectorAll('[id$="CelebrationMessage"]').forEach(item => { setDisplay(item, 'none'); });
       tab.querySelectorAll('.selected').forEach(item => item.classList.remove('selected'));
-      return clearDemoClipboard(region);
+      if (!readOnly) return clearDemoClipboard(region);
     };
   }
   tab.addEventListener('demoleave', () => { void window[names[names.length - 1]](); });

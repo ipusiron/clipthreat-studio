@@ -279,7 +279,7 @@ READMEの表・数値・画像参照もテストで検証します。
 
 | 項目 | 件数 |
 |---|---:|
-| 学習タブ | 7 |
+| 学習タブ | 8 |
 | 文字細工のコピー例 | 4 |
 | Tipsチェックリスト | 3 |
 | 各チェックリストの項目 | 10 |
@@ -341,7 +341,7 @@ clipthreat-studio/                 # 教育ツール本体
 │   ├── screenshot2.png           # 安全化したClickFixの伏せ字
 │   └── screenshot3.png           # 文字細工の分析結果
 ├── favicon.svg                   # サイトアイコン
-├── index.html                    # 7タブの画面
+├── index.html                    # 8タブの画面
 ├── js/                           # ESモジュール
 │   ├── autopaste.js              # 外部通信のない送信模擬表示
 │   ├── clickfix.js               # 無害文言のコピーと学習表示
@@ -349,6 +349,7 @@ clipthreat-studio/                 # 教育ツール本体
 │   ├── clipboard-access.js       # 書き込み順序と後始末
 │   ├── clipthreat-messages.js     # 日本語の表示辞書
 │   ├── main.js                   # タブ・ヘルプ・イベント制御
+│   ├── pastecheck.js             # 読み取り専用の貼り付け前チェック
 │   ├── shared.js                 # DOM非依存の判定・URL・伏せ字
 │   ├── sniff.js                  # 貼り付けの可視化
 │   ├── tips.js                   # 対策チェックリスト

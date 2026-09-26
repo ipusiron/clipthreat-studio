@@ -533,6 +533,19 @@ export const messages = {
   "tips.70": "高優先度",
 };
 
+Object.assign(messages, {
+  'paste.warning': '危険の兆候あり。内容と貼り付け先を確認してください。',
+  'paste.clear': '問題なし。今回の検出対象は見つかりませんでした。安全を保証する判定ではありません。',
+  'paste.tooLong': '入力は100,000コードポイント以内にしてください。',
+  'paste.invisible': '見えない文字',
+  'paste.bidi': '方向の制御文字',
+  'paste.mixed': '文字体系の混在（ホモグラフの疑い）',
+  'paste.none': 'なし',
+  'paste.detected': ['検出：', '件。位置（1文字目から）：', ''],
+  'paste.denied': '読み取れませんでした。権限を確認するか、入力欄に手入力してください。',
+  'paste.reset': '入力と結果を初期化しました。クリップボードは変更していません。'
+});
+
 export function m(key, values = []) {
   const message = messages[key];
   if (message === undefined) throw new Error('Unknown message: ' + key);
