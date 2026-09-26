@@ -283,9 +283,10 @@ READMEの表・数値・画像参照もテストで検証します。
 | 文字細工のコピー例 | 4 |
 | Tipsチェックリスト | 3 |
 | 各チェックリストの項目 | 10 |
-| テストファイル | 6 |
+| テストファイル | 7 |
 
 - `test/shared.test.js`：種別・文字判定、エスケープ、Day023連携URL、伏せ字
+- `test/pastecheck.test.js`：貼り付け前チェックの判定表・境界・安全表示
 - `test/safety.test.js`：無害文言、遅延処理の取り消し、書き込み順序
 - `test/html.test.js`：CSP、外部モジュール、ARIA、インライン処理の不在
 - `test/contrast.test.js`：配色のコントラスト
@@ -362,6 +363,7 @@ clipthreat-studio/                 # 教育ツール本体
     ├── html.test.js              # 画面構造とCSPの検証
     ├── readme.test.js            # 文書・件数・画像の検証
     ├── safety.test.js            # 安全化・後始末の検証
+    ├── pastecheck.test.js        # 貼り付け前チェックの判定と境界の検証
     └── shared.test.js            # 純粋ロジックの検証
 ```
 
