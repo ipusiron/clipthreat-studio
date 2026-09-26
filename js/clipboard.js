@@ -1,12 +1,13 @@
+import { setDisplay } from './ui.js';
+import { writeClipboardText, installDemoResets, createDemoTimers } from './clipboard-access.js';
+import { escapeHtml } from './shared.js';
+import { m } from './clipthreat-messages.js';
+
 window.addEventListener("DOMContentLoaded", () => {
+  const timers = createDemoTimers();
   const inputArea = document.getElementById("clipboardInput");
   const outputBox = document.getElementById("clipboardOutput");
 
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
 
   function showMessage(message, type = 'info') {
     const icons = {
@@ -23,76 +24,64 @@ window.addEventListener("DOMContentLoaded", () => {
     const timestamp = new Date().toLocaleTimeString('ja-JP');
     const escapedText = escapeHtml(text);
     const preview = text.length > 100 ? escapedText.substring(0, 100) + '...' : escapedText;
-    
-    outputBox.innerHTML = `
-      <div class="clipboard-result">
-        <div class="action-info">
-          <span class="action">${action}</span>
-          <span class="timestamp">${timestamp}</span>
-        </div>
-        <div class="content-info">
-          <div class="preview"><code>${preview}</code></div>
-          <div class="meta">
-            <span>文字数: ${text.length}</span>
-            <span>行数: ${text.split('\n').length}</span>
-          </div>
-        </div>
-        <div class="action-explanation">
-          ${action === 'クリップボードに書き込みました' ? 
-            '<small>✔️ 他のアプリでCtrl+Vで貼り付け可能です</small>' :
-            '<small>✔️ テキストエリアに反映されました</small>'}
-        </div>
-      </div>
-    `;
+
+    outputBox.innerHTML = m('clipboard.14', [action, timestamp, preview, text.length, text.split('\n').length, action === m('clipboard.17') ?
+            m('clipboard.16') :
+            m('clipboard.15')]);
   }
 
   window.writeClipboard = async function () {
+    const generation = timers.generation;
     const text = inputArea.value.trim();
     if (!text) {
-      showMessage('書き込むテキストを入力してください。', 'warning');
+      showMessage(m('clipboard.13'), 'warning');
       inputArea.focus();
       return;
     }
 
     try {
-      await navigator.clipboard.writeText(text);
-      showClipboardContent(text, 'クリップボードに書き込みました');
+      await writeClipboardText(text);
+      if (generation !== timers.generation) return;
+      showClipboardContent(text, m('clipboard.12'));
       inputArea.select();
+      return true;
     } catch (err) {
-      showMessage('クリップボードへの書き込みに失敗しました。HTTPSで接続されているか確認してください。', 'error');
-      console.error('Clipboard write failed:', err);
+      if (generation !== timers.generation) return false;
+      showMessage(m('clipboard.11'), 'error');
     }
   };
 
   window.readClipboard = async function () {
+    const generation = timers.generation;
     try {
       const text = await navigator.clipboard.readText();
+      if (generation !== timers.generation) return;
       if (!text) {
-        showMessage('クリップボードは空です。', 'info');
+        showMessage(m('clipboard.10'), 'info');
         return;
       }
-      showClipboardContent(text, 'クリップボードから読み取りました');
+      showClipboardContent(text, m('clipboard.9'));
       inputArea.value = text;
+      return true;
     } catch (err) {
+      if (generation !== timers.generation) return false;
       if (err.name === 'NotAllowedError') {
-        showMessage('クリップボードの読み取り権限がありません。「許可」をクリックしてください。<br><small>※これはブラウザーのセキュリティ機能で、悪意あるサイトが勝手にクリップボードを読み取ることを防いでいます。</small>', 'error');
+        showMessage(m('clipboard.8'), 'error');
       } else if (err.name === 'SecurityError') {
-        showMessage('セキュリティエラー：HTTPSで接続されているか確認してください。<br><small>クリップボードAPIはHTTPS接続が必須です。</small>', 'error');
+        showMessage(m('clipboard.7'), 'error');
       } else {
-        showMessage('クリップボードの読み取りに失敗しました。ブラウザーの許可ダイアログで「許可」を選択してください。', 'error');
+        showMessage(m('clipboard.6'), 'error');
       }
-      console.error('Clipboard read failed:', err);
     }
   };
 
   window.clearClipboard = async function () {
     try {
-      await navigator.clipboard.writeText('');
-      showMessage('クリップボードをクリアしました。', 'success');
+      await writeClipboardText('');
+      showMessage(m('clipboard.5'), 'success');
       inputArea.value = '';
     } catch (err) {
-      showMessage('クリップボードのクリアに失敗しました。', 'error');
-      console.error('Clipboard clear failed:', err);
+      showMessage(m('clipboard.4'), 'error');
     }
   };
 
@@ -109,30 +98,30 @@ window.addEventListener("DOMContentLoaded", () => {
     selection.removeAllRanges();
     selection.addRange(range);
     element.classList.add('selected');
-    setTimeout(() => {
+    timers.later(() => {
       element.classList.remove('selected');
     }, 2000);
-    
+
     updateTutorialStep(2);
   };
 
   window.resetBasicDemo = function() {
     inputArea.value = '';
-    outputBox.innerHTML = '<div class="message info">📋 デモをリセットしました。基本的なクリップボード操作を体験してください。</div>';
+    outputBox.innerHTML = m('clipboard.3');
   };
 
   window.resetTutorial = function() {
-    document.querySelectorAll('.step').forEach(step => {
+    document.querySelectorAll('#tab-clipboard .step').forEach(step => {
       step.classList.remove('completed', 'active');
     });
     document.getElementById('step1').classList.add('active');
     inputArea.value = '';
-    outputBox.innerHTML = '<div class="message info">📋 チュートリアルをリセットしました。ステップ1から始めましょう！</div>';
-    
+    outputBox.innerHTML = m('clipboard.2');
+
     // OKボタンを非表示にする
     const okButton = document.querySelector('#step4 .step-ok-button');
     if (okButton) {
-      okButton.style.display = 'none';
+      setDisplay(okButton, 'none');
     }
   };
 
@@ -140,41 +129,25 @@ window.addEventListener("DOMContentLoaded", () => {
     // ステップ4完了
     document.getElementById('step4').classList.add('completed');
     document.getElementById('step4').classList.remove('active');
-    
+
     // OKボタンを非表示にする
     const okButton = document.querySelector('#step4 .step-ok-button');
     if (okButton) {
-      okButton.style.display = 'none';
+      setDisplay(okButton, 'none');
     }
-    
+
     // 全ステップ完了のお祝いメッセージ
-    outputBox.innerHTML = `
-      <div class="clipboard-result">
-        <div class="action-info">
-          <span class="action">🎉 チュートリアル完了！</span>
-          <span class="timestamp">${new Date().toLocaleTimeString('ja-JP')}</span>
-        </div>
-        <div class="content-info">
-          <div class="preview" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #4caf50;">
-            <strong>おめでとうございます！</strong><br>
-            クリップボード基本操作をマスターしました！<br>
-            📋 読み取り・書き込み・クリアの操作方法を習得<br>
-            🔒 セキュリティの重要性も理解<br>
-            次は他のタブで更なる脅威について学習しましょう！
-          </div>
-        </div>
-      </div>
-    `;
+    outputBox.innerHTML = m('clipboard.1', [new Date().toLocaleTimeString('ja-JP')]);
   };
 
   function updateTutorialStep(stepNumber) {
-    document.querySelectorAll('.step').forEach((step, index) => {
+    document.querySelectorAll('#tab-clipboard .step').forEach((step, index) => {
       step.classList.remove('active');
       if (index < stepNumber - 1) {
         step.classList.add('completed');
       }
     });
-    
+
     const currentStep = document.getElementById(`step${stepNumber}`);
     if (currentStep) {
       currentStep.classList.add('active');
@@ -183,20 +156,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const originalReadClipboard = window.readClipboard;
   window.readClipboard = async function() {
-    await originalReadClipboard();
-    updateTutorialStep(3);
+    const generation = timers.generation;
+    if (await originalReadClipboard() && generation === timers.generation) updateTutorialStep(3);
   };
 
   const originalWriteClipboard = window.writeClipboard;
   window.writeClipboard = async function() {
-    await originalWriteClipboard();
+    const generation = timers.generation;
+    if (!await originalWriteClipboard() || generation !== timers.generation) return;
     updateTutorialStep(4);
     // ステップ4でOKボタンを表示
     const okButton = document.querySelector('#step4 .step-ok-button');
     if (okButton) {
-      okButton.style.display = 'inline-block';
+      setDisplay(okButton, 'inline-block');
     }
   };
 
   document.getElementById('step1').classList.add('active');
+  installDemoResets(["resetBasicDemo","resetTutorial"], outputBox, () => timers.cancel());
 });

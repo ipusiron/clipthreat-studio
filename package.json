@@ -1,0 +1,8 @@
+{
+  "name": "clipthreat-studio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

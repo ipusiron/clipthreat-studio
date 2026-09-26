@@ -1,4 +1,10 @@
+import { setDisplay } from './ui.js';
+import { writeClipboardText, installDemoResets, createDemoTimers } from './clipboard-access.js';
+import { escapeHtml, detectContentType as classifyContent } from './shared.js';
+import { m } from './clipthreat-messages.js';
+
 window.addEventListener("DOMContentLoaded", () => {
+  const timers = createDemoTimers();
   const toggle = document.getElementById("watchToggle");
   const logArea = document.getElementById("watchLog");
   const intervalSelect = document.getElementById("watchInterval");
@@ -13,17 +19,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const MAX_LOG_ENTRIES = 50;
   let watchTutorialStep = 1;
 
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
 
   function updateStats() {
-    const status = intervalId ? '🔴 監視中' : '⚪ 停止中';
-    const duration = watchStartTime ? 
+    const status = intervalId ? m('watch.15') : m('watch.14');
+    const duration = watchStartTime ?
       Math.floor((Date.now() - watchStartTime) / 1000) : 0;
-    statsSpan.innerHTML = `📊 監視状態：${status} | 検出数：${detectionCount} | 経過時間：${duration}秒`;
+    statsSpan.innerHTML = m('watch.13', [status, detectionCount, duration]);
   }
 
   function addLogEntry(message, type = 'info') {
@@ -33,7 +34,7 @@ window.addEventListener("DOMContentLoaded", () => {
       message: message,
       type: type
     };
-    
+
     logEntries.push(entry);
     if (logEntries.length > MAX_LOG_ENTRIES) {
       logEntries.shift();
@@ -43,7 +44,7 @@ window.addEventListener("DOMContentLoaded", () => {
       // 新しいエントリのみを先頭に追加
       addLogEntryToDOM(entry);
     }
-    
+
     // チュートリアル進行チェック（基本的な進行のみ）
     if (type === 'detection') {
       if (watchTutorialStep === 2) {
@@ -55,24 +56,24 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function addLogEntryToDOM(entry) {
-    const icon = entry.type === 'detection' ? '🔍' : 
-                 entry.type === 'error' ? '❌' : 
-                 entry.type === 'start' ? '🟢' : 
+    const icon = entry.type === 'detection' ? '🔍' :
+                 entry.type === 'error' ? '❌' :
+                 entry.type === 'start' ? '🟢' :
                  entry.type === 'stop' ? '🔴' : '📌';
-    
+
     const className = `log-entry log-${entry.type}`;
     const entryHTML = `<div class="${className}">
                         <span class="log-time">${entry.time}</span>
                         <span class="log-icon">${icon}</span>
                         <span class="log-message">${entry.message}</span>
                       </div>`;
-    
+
     // 空のログメッセージがある場合は削除
     const emptyLog = logArea.querySelector('.log-empty');
     if (emptyLog) {
       emptyLog.remove();
     }
-    
+
     // 新しいエントリを先頭に追加
     logArea.insertAdjacentHTML('afterbegin', entryHTML);
   }
@@ -80,11 +81,11 @@ window.addEventListener("DOMContentLoaded", () => {
   function renderLog() {
     const reversedEntries = [...logEntries].reverse();
     const html = reversedEntries.map(entry => {
-      const icon = entry.type === 'detection' ? '🔍' : 
-                   entry.type === 'error' ? '❌' : 
-                   entry.type === 'start' ? '🟢' : 
+      const icon = entry.type === 'detection' ? '🔍' :
+                   entry.type === 'error' ? '❌' :
+                   entry.type === 'start' ? '🟢' :
                    entry.type === 'stop' ? '🔴' : '📌';
-      
+
       const className = `log-entry log-${entry.type}`;
       return `<div class="${className}">
                 <span class="log-time">${entry.time}</span>
@@ -92,8 +93,8 @@ window.addEventListener("DOMContentLoaded", () => {
                 <span class="log-message">${entry.message}</span>
               </div>`;
     }).join('');
-    
-    logArea.innerHTML = html || '<div class="log-empty">📋 まだログがありません</div>';
+
+    logArea.innerHTML = html || m('watch.12');
   }
 
 
@@ -102,40 +103,43 @@ window.addEventListener("DOMContentLoaded", () => {
   let lastSuccessTime = Date.now();
 
   async function checkClipboard() {
+    const generation = timers.generation;
     try {
       const current = await navigator.clipboard.readText();
+      if (generation !== timers.generation || !intervalId) return;
       consecutiveErrors = 0;
       lastSuccessTime = Date.now();
-      
+
       if (current && current !== lastClipboardContent) {
         detectionCount++;
         const escapedText = escapeHtml(current);
-        const preview = current.length > 100 ? 
+        const preview = current.length > 100 ?
           escapedText.substring(0, 100) + '...' : escapedText;
-        
+
         const contentType = detectContentType(current);
-        const info = `文字数: ${current.length} | タイプ: ${contentType}`;
-        addLogEntry(`変化検出 - ${info}<br><div class="preview-content">${preview}</div>`, 'detection');
-        
+        const info = m('watch.11', [current.length, contentType]);
+        addLogEntry(m('watch.10', [info, preview]), 'detection');
+
         // ステップ4でのチュートリアル進行チェック（URLまたはメールアドレス検出時）
         if (watchTutorialStep === 4 && (contentType === 'URL' || contentType === 'Email')) {
           updateWatchTutorialStep(5);
           // ステップ5でOKボタンを表示
           const okButton = document.querySelector('#watch-step5 .step-ok-button');
           if (okButton) {
-            okButton.style.display = 'inline-block';
+            setDisplay(okButton, 'inline-block');
           }
         }
-        
+
         lastClipboardContent = current;
-        
+
         if ('vibrate' in navigator) {
           navigator.vibrate(200);
         }
       }
     } catch (err) {
+      if (generation !== timers.generation || !intervalId) return;
       consecutiveErrors++;
-      
+
       if (err.name === 'NotAllowedError') {
         if (err.message.includes('not focused') || document.hidden || !document.hasFocus()) {
           // フォーカス関連のエラーは静かに処理（ログ出力せずにスキップ）
@@ -143,79 +147,78 @@ window.addEventListener("DOMContentLoaded", () => {
         } else {
           // 許可関連のエラー
           if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
-            addLogEntry('クリップボードの読み取り権限がありません。ブラウザーの許可ダイアログで「許可」をクリックしてください。', 'error');
+            addLogEntry(m('watch.9'), 'error');
             stopWatching();
           }
         }
       } else {
         if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
-          addLogEntry('監視中にエラーが継続しています。監視を停止します。', 'error');
+          addLogEntry(m('watch.8'), 'error');
           stopWatching();
         }
       }
-      
-      console.error('Clipboard read error:', err);
     }
   }
 
   function detectContentType(text) {
-    if (/^https?:\/\//.test(text)) return 'URL';
-    if (/^[A-Za-z0-9+\/=]+$/.test(text) && text.length > 20) return 'Base64?';
-    if (/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/.test(text)) return 'Email';
-    if (/^\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}$/.test(text)) return 'カード番号?';
-    return 'テキスト';
+    return m(classifyContent(text).key);
   }
 
   async function requestClipboardPermission() {
+    const generation = timers.generation;
     try {
       await navigator.clipboard.readText();
       return true;
     } catch (err) {
+      if (generation !== timers.generation) return false;
       if (err.name === 'NotAllowedError') {
-        addLogEntry('ブラウザーの許可ダイアログで「許可」をクリックしてください。', 'info');
+        addLogEntry(m('watch.7'), 'info');
         return false;
       }
-      throw err;
+      addLogEntry(m('clipboard.unavailable'), 'error');
+      return false;
     }
   }
 
   async function startWatching() {
+    const generation = timers.generation;
     const interval = parseInt(intervalSelect.value);
-    
+
     // 監視開始前に許可を取得
-    addLogEntry('クリップボードの許可を確認中...', 'info');
+    addLogEntry(m('watch.6'), 'info');
     const hasPermission = await requestClipboardPermission();
-    
+    if (generation !== timers.generation || !toggle.checked) return;
+
     if (!hasPermission) {
       toggle.checked = false;
       return;
     }
-    
+
     watchStartTime = Date.now();
     detectionCount = 0;
-    retryCount = 0;
-    
-    addLogEntry(`監視を開始しました (間隔: ${interval}ms)`, 'start');
-    
+
+    addLogEntry(m('watch.5', [interval]), 'start');
+
     intervalId = setInterval(() => {
       checkClipboard();
     }, interval);
-    
+
     // 統計は1秒間隔で更新（監視間隔と独立）
     statsIntervalId = setInterval(() => {
       if (intervalId) {
         updateStats();
       }
     }, 1000);
-    
+
     updateStats();
   }
 
   function stopWatching() {
+    timers.cancel();
     if (intervalId) {
       clearInterval(intervalId);
       intervalId = null;
-      addLogEntry('監視を停止しました', 'stop');
+      addLogEntry(m('watch.4'), 'stop');
       watchStartTime = null;
       updateStats();
     }
@@ -243,7 +246,7 @@ window.addEventListener("DOMContentLoaded", () => {
       // ステップ5でOKボタンを表示
       const okButton = document.querySelector('#watch-step5 .step-ok-button');
       if (okButton) {
-        okButton.style.display = 'inline-block';
+        setDisplay(okButton, 'inline-block');
       }
     }
     if (intervalId) {
@@ -262,9 +265,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && intervalId) {
-      addLogEntry('タブが非アクティブになりました。監視は継続しますが、一部ブラウザーではクリップボードアクセスが制限される場合があります。', 'info');
+      addLogEntry(m('watch.3'), 'info');
     } else if (!document.hidden && toggle.checked && intervalId) {
-      addLogEntry('タブがアクティブになりました。', 'info');
+      addLogEntry(m('watch.2'), 'info');
       consecutiveErrors = 0;
     }
   });
@@ -283,7 +286,7 @@ window.addEventListener("DOMContentLoaded", () => {
         step.classList.add('completed');
       }
     });
-    
+
     const currentStep = document.getElementById(`watch-step${stepNumber}`);
     if (currentStep) {
       currentStep.classList.add('active');
@@ -297,23 +300,23 @@ window.addEventListener("DOMContentLoaded", () => {
     });
     document.getElementById('watch-step1').classList.add('active');
     watchTutorialStep = 1;
-    
+
     // 監視停止とログクリア
     if (intervalId) {
       stopWatching();
     }
     clearWatchLog();
-    
+
     // OKボタンを非表示にする
     const okButton = document.querySelector('#watch-step5 .step-ok-button');
     if (okButton) {
-      okButton.style.display = 'none';
+      setDisplay(okButton, 'none');
     }
-    
+
     // お祝いメッセージを非表示にする
     const celebrationDiv = document.getElementById('watchCelebrationMessage');
     if (celebrationDiv) {
-      celebrationDiv.style.display = 'none';
+      setDisplay(celebrationDiv, 'none');
     }
   };
 
@@ -321,39 +324,24 @@ window.addEventListener("DOMContentLoaded", () => {
     // ステップ5完了
     document.getElementById('watch-step5').classList.add('completed');
     document.getElementById('watch-step5').classList.remove('active');
-    
+
     // OKボタンを非表示にする
     const okButton = document.querySelector('#watch-step5 .step-ok-button');
     if (okButton) {
-      okButton.style.display = 'none';
+      setDisplay(okButton, 'none');
     }
-    
+
     // 完了メッセージを専用領域に表示
     const celebrationDiv = document.getElementById('watchCelebrationMessage');
-    celebrationDiv.innerHTML = `
-      <div class="clipboard-result">
-        <div class="action-info">
-          <span class="action">🎉 チュートリアル完了！</span>
-          <span class="timestamp">${new Date().toLocaleTimeString('ja-JP')}</span>
-        </div>
-        <div class="content-info">
-          <div class="preview" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #4caf50;">
-            <strong>おめでとうございます！監視モードをマスターしました！</strong><br>
-            📡 リアルタイム監視の仕組みを理解<br>
-            🔍 データタイプ判別機能を体験<br>
-            ⚙️ 監視間隔の調整方法を習得<br>
-            次は他のタブでより高度な脅威について学習しましょう！
-          </div>
-        </div>
-      </div>
-    `;
-    celebrationDiv.style.display = 'block';
+    celebrationDiv.innerHTML = m('watch.1', [new Date().toLocaleTimeString('ja-JP')]);
+    setDisplay(celebrationDiv, 'block');
   };
 
 
   renderLog();
   updateStats();
-  
+
   // チュートリアルを初期化
   document.getElementById('watch-step1').classList.add('active');
+  installDemoResets(["resetWatchTutorial"], logArea, () => timers.cancel());
 });

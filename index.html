@@ -3,43 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; object-src 'none'; form-action 'none'" />
+    <meta name="referrer" content="no-referrer" />
     <title>ClipThreat Studio</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   </head>
   <body>
+    <noscript>この教材にはJavaScriptが必要です。スクリプトを許可してから再読み込みしてください。</noscript>
     <header>
       <div class="header-content">
         <div class="header-title">
           <h1>🧪 ClipThreat Studio</h1>
-          <button class="help-button" onclick="showHelpModal()" title="ヘルプ・使い方を表示">❓</button>
+          <button type="button" class="help-button" data-action="showHelpModal" title="ヘルプ・使い方を表示">❓</button>
         </div>
         <p>クリップボード悪用攻撃の可視化＆体験ツール</p>
       </div>
     </header>
 
-    <nav class="tab-nav">
-      <button class="tab-button active" data-tab="tab-clipboard">
+    <nav class="tab-nav" role="tablist" aria-label="学習テーマ">
+      <button type="button" class="tab-button active" data-tab="tab-clipboard" id="tab-clipboard-button" role="tab" aria-controls="tab-clipboard" aria-selected="true" tabindex="0">
         📋 基本操作
       </button>
-      <button class="tab-button" data-tab="tab-watch">🔍 監視モード</button>
-      <button class="tab-button" data-tab="tab-sniff">
+      <button type="button" class="tab-button" data-tab="tab-watch" id="tab-watch-button" role="tab" aria-controls="tab-watch" aria-selected="false" tabindex="-1">🔍 監視モード</button>
+      <button type="button" class="tab-button" data-tab="tab-sniff" id="tab-sniff-button" role="tab" aria-controls="tab-sniff" aria-selected="false" tabindex="-1">
         🎭 pasteイベントスニッフィング
       </button>
-      <button class="tab-button" data-tab="tab-clickfix">
+      <button type="button" class="tab-button" data-tab="tab-clickfix" id="tab-clickfix-button" role="tab" aria-controls="tab-clickfix" aria-selected="false" tabindex="-1">
         🚨 ClickFix攻撃
       </button>
-      <button class="tab-button" data-tab="tab-autopaste">🧲 自動送信</button>
-      <button class="tab-button" data-tab="tab-weirdchar">🧪 文字細工</button>
-      <button class="tab-button" data-tab="tab-tips">
+      <button type="button" class="tab-button" data-tab="tab-autopaste" id="tab-autopaste-button" role="tab" aria-controls="tab-autopaste" aria-selected="false" tabindex="-1">🧲 自動送信</button>
+      <button type="button" class="tab-button" data-tab="tab-weirdchar" id="tab-weirdchar-button" role="tab" aria-controls="tab-weirdchar" aria-selected="false" tabindex="-1">🧪 文字細工</button>
+      <button type="button" class="tab-button" data-tab="tab-tips" id="tab-tips-button" role="tab" aria-controls="tab-tips" aria-selected="false" tabindex="-1">
         🔒 セキュリティTips
       </button>
     </nav>
 
     <main>
-      <section id="tab-clipboard" class="tab-content active">
+      <section id="tab-clipboard" class="tab-content active" role="tabpanel" aria-labelledby="tab-clipboard-button">
         <h2>📋 クリップボード基本操作</h2>
-        
+
         <div class="explanation-box">
           <h3>💡 使い方</h3>
           <ul>
@@ -51,7 +55,7 @@
             🔒 <strong>セキュリティ注意：</strong>クリップボードの読み取りはユーザーのプライバシーに関わるため、ブラウザーは必ず許可を求めます。
           </div>
         </div>
-        
+
         <div class="tutorial-box">
           <h3>🎯 実際に試してみよう！</h3>
           <div class="tutorial-steps">
@@ -59,7 +63,7 @@
               <span class="step-number">1</span>
               <div class="step-content">
                 <p>まず、このテキストを選択してコピーしてみましょう：</p>
-                <code class="sample-text" onclick="selectText(this)">クリップボードの実験テキストです🧪</code>
+                <button type="button" class="sample-text" data-action="selectText" data-self="true">クリップボードの実験テキストです🧪</button>
                 <small>↑ クリックして選択 → Ctrl+Cでコピー</small>
               </div>
             </div>
@@ -83,23 +87,23 @@
               <span class="step-number">4</span>
               <div class="step-content">
                 <p>他のアプリ（メモ帳など）やブラウザーの検索欄にて、Ctrl+Vで貼り付けて確認！</p>
-                <button class="step-ok-button" onclick="confirmStep4()" style="display: none; margin-top: 0.5rem;">✅ 確認できました</button>
+                <button type="button" class="step-ok-button is-hidden legacy-style-1" data-action="confirmStep4">✅ 確認できました</button>
               </div>
             </div>
           </div>
-          <button class="tutorial-reset" onclick="resetTutorial()">🔄 チュートリアルをリセット</button>
+          <button type="button" class="tutorial-reset" data-action="resetTutorial">🔄 チュートリアルをリセット</button>
         </div>
-        
+
         <textarea
-          id="clipboardInput"
+          id="clipboardInput" aria-label="クリップボード実験用テキスト"
           rows="4"
           placeholder="ここにテキストを入力してコピー・ペースト実験..."
         ></textarea>
         <div class="button-row">
-          <button onclick="readClipboard()" title="クリップボードの現在の内容を表示">📋 クリップボードから読み取る</button>
-          <button onclick="writeClipboard()" title="テキストエリアの内容をクリップボードにコピー">✍️ クリップボードに書き込む</button>
-          <button onclick="clearClipboard()" title="クリップボードを空にする">🗑️ クリップボードをクリア</button>
-          <button onclick="resetBasicDemo()" class="secondary-button" title="デモの状態をリセットする">🔄 デモをリセット</button>
+          <button type="button" data-action="readClipboard" title="クリップボードの現在の内容を表示">📋 クリップボードから読み取る</button>
+          <button type="button" data-action="writeClipboard" title="テキストエリアの内容をクリップボードにコピー">✍️ クリップボードに書き込む</button>
+          <button type="button" data-action="clearClipboard" title="クリップボードを空にする">🗑️ クリップボードをクリア</button>
+          <button type="button" data-action="resetBasicDemo" class="secondary-button" title="デモの状態をリセットする">🔄 デモをリセット</button>
         </div>
         <div class="info-text">
           <small>💡 Ctrl+Enterで書き込みも可能です</small>
@@ -107,9 +111,9 @@
         <div id="clipboardOutput" class="output-box"></div>
       </section>
 
-      <section id="tab-watch" class="tab-content">
+      <section id="tab-watch" class="tab-content" role="tabpanel" aria-labelledby="tab-watch-button">
         <h2>🔍 監視モード</h2>
-        
+
         <div class="explanation-box">
           <h3>💡 この機能について</h3>
           <p>クリップボードの内容を定期的に監視し、変化を検出します。</p>
@@ -121,7 +125,7 @@
             3. ローカルファイル(file://)での実行は制限があります。HTTPサーバーでの実行を推奨します。
           </div>
         </div>
-        
+
         <div class="tutorial-box">
           <h3>🎯 実際に試してみよう！</h3>
           <div class="tutorial-steps">
@@ -161,19 +165,19 @@
               <div class="step-content">
                 <p>監視間隔を変更して、検出の反応速度の違いを体験してみましょう</p>
                 <small>推奨：0.5秒にして素早い反応を確認後、5秒にして違いを体感</small>
-                <button class="step-ok-button" onclick="confirmWatchStep5()" style="display: none; margin-top: 0.5rem;">✅ 体験できました</button>
+                <button type="button" class="step-ok-button is-hidden legacy-style-1" data-action="confirmWatchStep5">✅ 体験できました</button>
               </div>
             </div>
           </div>
-          <button class="tutorial-reset" onclick="resetWatchTutorial()">🔄 チュートリアルをリセット</button>
+          <button type="button" class="tutorial-reset" data-action="resetWatchTutorial">🔄 チュートリアルをリセット</button>
         </div>
-        
+
         <div class="control-panel">
           <label class="watch-toggle">
             <input type="checkbox" id="watchToggle" />
             <span>📡 自動監視を有効にする</span>
           </label>
-          
+
           <div class="interval-selector">
             <label>監視間隔：</label>
             <select id="watchInterval">
@@ -183,22 +187,22 @@
               <option value="5000">5秒</option>
             </select>
           </div>
-          
-          <button onclick="clearWatchLog()" class="secondary-button">🗑️ ログをクリア</button>
+
+          <button type="button" data-action="clearWatchLog" class="secondary-button">🗑️ ログをクリア</button>
         </div>
-        
+
         <div class="stats-panel">
           <span id="watchStats">📊 監視状態：停止中 | 検出数：0</span>
         </div>
-        
+
         <div id="watchLog" class="output-box watch-log"></div>
-        
-        <div id="watchCelebrationMessage" class="celebration-message" style="display: none;"></div>
+
+        <div id="watchCelebrationMessage" class="celebration-message is-hidden"></div>
       </section>
 
-      <section id="tab-sniff" class="tab-content">
+      <section id="tab-sniff" class="tab-content" role="tabpanel" aria-labelledby="tab-sniff-button">
         <h2>🎭 pasteイベントスニッフィング</h2>
-        
+
         <div class="explanation-box">
           <h3>💡 この機能について</h3>
           <p>pasteイベントスニフィングは、ユーザーが入力欄に貼り付けを行った瞬間に、その内容を<strong>傍受・記録</strong>する技術です。</p>
@@ -206,7 +210,7 @@
           <div class="security-note">
             🔒 <strong>セキュリティリスク：</strong>悪意あるサイトが、パスワードや機密情報を含む貼り付け内容を盗み取る可能性があります。
           </div>
-          <div style="background: #fff3e0; border: 1px solid #ffb74d; padding: 0.8rem; margin-top: 1rem; border-radius: 4px; font-size: 0.9rem;">
+          <div class="legacy-style-2">
             <strong>📋 自動送信攻撃との違い：</strong><br>
             • <strong>pasteスニフィング</strong>：内容を傍受・記録（後で送信）<br>
             • <strong>自動送信攻撃</strong>：貼り付けと同時に即座に外部送信
@@ -222,7 +226,7 @@
               <span class="step-number">1</span>
               <div class="step-content">
                 <p>まず、テスト用の文字列をコピーしましょう（下の文字列をクリックして選択）</p>
-                <code class="sample-text" onclick="selectSniffText(this)">テスト用パスワード: SecretPass123!</code>
+                <button type="button" class="sample-text" data-action="selectSniffText" data-self="true">テスト用パスワード: SecretPass123!</button>
                 <small>↑ クリックして選択 → Ctrl+Cでコピー</small>
               </div>
             </div>
@@ -238,14 +242,14 @@
               <div class="step-content">
                 <p>ログエリアに表示された傍受された内容を確認しましょう</p>
                 <small>⚠️ 実際の攻撃では、この情報が攻撃者のサーバーに送信されます</small>
-                <button class="step-ok-button" onclick="confirmStep3()" style="display: none; margin-top: 0.5rem;">✅ 理解しました</button>
+                <button type="button" class="step-ok-button is-hidden legacy-style-1" data-action="confirmStep3">✅ 理解しました</button>
               </div>
             </div>
             <div class="step" id="sniff-step4">
               <span class="step-number">4</span>
               <div class="step-content">
                 <p>別の種類のデータも試してみましょう（クレジットカード風の数字）</p>
-                <code class="sample-text" onclick="selectSniffText(this)">4111-1111-1111-1111</code>
+                <button type="button" class="sample-text" data-action="selectSniffText" data-self="true">4111-1111-1111-1111</button>
                 <small>↑ この偽カード番号をコピーして貼り付けてみてください</small>
               </div>
             </div>
@@ -254,11 +258,11 @@
               <div class="step-content">
                 <p>実際のWebサイトでは、このような危険性があることを覚えておきましょう</p>
                 <small>🛡️ 重要な情報は信頼できるサイトでのみ貼り付けるようにしてください</small>
-                <button class="step-ok-button" onclick="confirmStep5()" style="display: none; margin-top: 0.5rem;">✅ 理解しました</button>
+                <button type="button" class="step-ok-button is-hidden legacy-style-1" data-action="confirmStep5">✅ 理解しました</button>
               </div>
             </div>
           </div>
-          <button class="tutorial-reset" onclick="resetSniffTutorial()">🔄 チュートリアルをリセット</button>
+          <button type="button" class="tutorial-reset" data-action="resetSniffTutorial">🔄 チュートリアルをリセット</button>
         </div>
 
         <div class="phishing-form-container">
@@ -272,10 +276,10 @@
               <label for="sniffInput" class="phishing-label">
                 パスワード / 認証コード / 機密情報
               </label>
-              <input 
-                id="sniffInput" 
-                type="password" 
-                placeholder="パスワードまたは認証コードを貼り付けてください..." 
+              <input
+                id="sniffInput"
+                type="password"
+                placeholder="パスワードまたは認証コードを貼り付けてください..."
                 class="phishing-input"
               />
               <small class="phishing-hint">💡 パスワードマネージャーからの貼り付けも可能です</small>
@@ -286,20 +290,20 @@
             </div>
           </div>
         </div>
-        
+
         <div id="sniffLog" class="output-box"></div>
 
         <div class="button-row">
-          <button class="secondary-button" onclick="resetSniffDemo()">🔄 デモをリセット</button>
+          <button type="button" class="secondary-button" data-action="resetSniffDemo">🔄 デモをリセット</button>
         </div>
 
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleAttackScenariosAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleAttackScenariosAccordion">
             <h3>⚠️ 実際の攻撃シナリオを確認する</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div class="accordion-content" id="attackScenariosAccordionContent">
-            <div class="explanation-box" style="background: #fff0f0; border-color: #ffc1c1; margin: 0;">
+            <div class="explanation-box legacy-style-3">
               <ul>
                 <li><strong>フィッシングサイト</strong>：偽のログインフォームで、ユーザーがパスワードマネージャーから貼り付けたパスワードを盗取</li>
                 <li><strong>偽の支払いページ</strong>：クレジットカード情報や暗号通貨ウォレットアドレスの貼り付けを監視</li>
@@ -308,7 +312,7 @@
                 <li><strong>偽のサポートサイト</strong>：技術サポートを装い、設定ファイルやログファイルの貼り付けを要求</li>
                 <li><strong>悪意あるWebアプリ</strong>：便利ツールを装い、ユーザーのデータ入力を監視</li>
               </ul>
-              <div class="warning-text" style="margin-top: 1rem;">
+              <div class="warning-text legacy-style-4">
                 ⚠️ <strong>重要：</strong>この攻撃は、ユーザーが貼り付け操作を行うだけで実行されます。特別な権限や複雑な手順は不要です。
               </div>
             </div>
@@ -316,12 +320,12 @@
         </div>
 
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleSniffAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleSniffAccordion">
             <h3>🛡️ 対策方法を確認する</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div class="accordion-content" id="sniffAccordionContent">
-            <div class="explanation-box" style="background: #f0fff0; border-color: #90ee90; margin: 0;">
+            <div class="explanation-box legacy-style-5">
               <ul>
                 <li><strong>サイトの信頼性確認</strong>：URLやSSL証明書を必ず確認してから貼り付けを行う</li>
                 <li><strong>手動入力の優先</strong>：重要な情報は可能な限り手動で入力する</li>
@@ -331,7 +335,7 @@
                 <li><strong>コンテンツセキュリティポリシー</strong>：CSPヘッダーでJavaScriptの実行を制限</li>
                 <li><strong>ブラウザーの設定</strong>：JavaScriptを部分的に無効化できるブラウザー設定を活用</li>
               </ul>
-              <div class="security-note" style="margin-top: 1rem;">
+              <div class="security-note legacy-style-4">
                 💡 <strong>開発者向け：</strong>ウェブサイト運営者は、pasteイベントリスナーの使用を最小限に抑え、必要な場合は透明性を保つことが重要です。
               </div>
             </div>
@@ -339,9 +343,9 @@
         </div>
       </section>
 
-      <section id="tab-clickfix" class="tab-content">
+      <section id="tab-clickfix" class="tab-content" role="tabpanel" aria-labelledby="tab-clickfix-button">
         <h2>🚨 ClickFix攻撃シミュレーション</h2>
-        
+
         <div class="explanation-box">
           <h3>💡 ClickFix攻撃とは</h3>
           <p>ClickFix攻撃は、ユーザーを騙して悪意あるコマンドを実行させるソーシャルエンジニアリング攻撃です。</p>
@@ -359,14 +363,14 @@
               <div class="step-content">
                 <p>まず、上のClickFix攻撃の説明を読んで仕組みを理解しましょう</p>
                 <small>💡 攻撃の概要と危険性を把握してから実際の体験に移ります</small>
-                <button class="step-ok-button" onclick="confirmClickFixStep1()" style="margin-top: 0.5rem;">✅ ClickFix攻撃の説明を読んだ</button>
+                <button type="button" class="step-ok-button legacy-style-1" data-action="confirmClickFixStep1">✅ ClickFix攻撃の説明を読んだ</button>
               </div>
             </div>
             <div class="step" id="clickfix-step2">
               <span class="step-number">2</span>
               <div class="step-content">
                 <p>下の偽エラーダイアログの仕掛けを観察した後、「🔧 今すぐ修復する（推奨）」ボタンをクリックして攻撃の流れを体験</p>
-                <small>💡 本物のエラーメッセージに見える視覚的トリック（点滅、緊急バッジ等）に注目<br>⚠️ 実際にはクリップボードに危険なコマンドがコピーされます</small>
+                <small>💡 偽のエラー表示による心理的誘導に注目<br>このデモがコピーするのは無害な説明文だけです。実行操作はしないでください。</small>
               </div>
             </div>
             <div class="step" id="clickfix-step3">
@@ -374,7 +378,7 @@
               <div class="step-content">
                 <p>下のログエリアで段階的な攻撃の進行を確認しましょう</p>
                 <small>🎓 各ステップでの攻撃手法と危険性を学習</small>
-                <button class="step-ok-button" onclick="confirmClickFixStep3()" style="display: none; margin-top: 0.5rem;">✅ ステップ4まで読んだ</button>
+                <button type="button" class="step-ok-button is-hidden legacy-style-1" data-action="confirmClickFixStep3">✅ ステップ4まで読んだ</button>
               </div>
             </div>
             <div class="step" id="clickfix-step4">
@@ -382,11 +386,11 @@
               <div class="step-content">
                 <p>「❌ 後で修復」ボタンもクリックして、キャンセルボタンの罠を確認した後、下の対策方法を読みましょう</p>
                 <small>🛡️ 安全な対処法と具体的な対策テクニックを学習</small>
-                <button class="step-ok-button" onclick="confirmClickFixStep4()" style="display: none; margin-top: 0.5rem;">✅ 対策方法を読んだ</button>
+                <button type="button" class="step-ok-button is-hidden legacy-style-1" data-action="confirmClickFixStep4">✅ 対策方法を読んだ</button>
               </div>
             </div>
           </div>
-          <button class="tutorial-reset" onclick="resetClickFixTutorial()">🔄 チュートリアルをリセット</button>
+          <button type="button" class="tutorial-reset" data-action="resetClickFixTutorial">🔄 チュートリアルをリセット</button>
         </div>
 
         <div class="clickfix-demo">
@@ -408,34 +412,34 @@
               </div>
             </div>
             <div class="error-actions">
-              <button class="fix-button" onclick="simulateClickFix()">🔧 今すぐ修復する（推奨）</button>
-              <button class="cancel-button" onclick="showCancelWarning()">❌ 後で修復</button>
+              <button type="button" class="fix-button" data-action="simulateClickFix">🔧 今すぐ修復する（推奨）</button>
+              <button type="button" class="cancel-button" data-action="showCancelWarning">❌ 後で修復</button>
             </div>
           </div>
         </div>
-        
-        <div class="button-row">
-          <button onclick="resetClickFixDemo()" class="secondary-button">🔄 デモをリセット</button>
-        </div>
-        
-        <div id="clickfixLog" class="output-box"></div>
 
-        <div id="clickfixCelebrationMessage" class="celebration-message" style="display: none;"></div>
+        <div class="button-row">
+          <button type="button" data-action="resetClickFixDemo" class="secondary-button">🔄 デモをリセット</button>
+        </div>
+
+        <div id="clickfixLog" aria-live="polite" class="output-box"></div>
+
+        <div id="clickfixCelebrationMessage" class="celebration-message is-hidden"></div>
 
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleClickFixAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleClickFixAccordion">
             <h3>🛡️ ClickFix攻撃への対策方法</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div class="accordion-content" id="clickfixAccordionContent">
-            <div class="explanation-box" style="background: #f0fff0; border-color: #90ee90; margin: 0;">
+            <div class="explanation-box legacy-style-5">
               <h4>🚨 即座に対処すべきこと</h4>
               <ul>
                 <li><strong>ページを閉じる</strong>：「修復」や「キャンセル」ボタンを押さず、ブラウザーを閉じる</li>
                 <li><strong>クリップボードを確認</strong>：怪しいコマンドがコピーされていないかチェック</li>
                 <li><strong>PowerShell実行の回避</strong>：Win+Rダイアログでは絶対にコマンドを実行しない</li>
               </ul>
-              
+
               <h4>🛡️ 予防対策</h4>
               <ul>
                 <li><strong>疑いの習慣</strong>：突然のエラーメッセージやシステム警告は疑う</li>
@@ -443,7 +447,7 @@
                 <li><strong>URLの確認</strong>：信頼できないサイトでの作業を避ける</li>
                 <li><strong>最新ブラウザーの使用</strong>：セキュリティ機能が向上したブラウザーを使用</li>
               </ul>
-              
+
               <h4>⚙️ 技術的対策</h4>
               <ul>
                 <li><strong>PowerShell実行ポリシー</strong>：ExecutionPolicyをRestrictedに設定</li>
@@ -451,8 +455,8 @@
                 <li><strong>ブラウザー拡張機能</strong>：悪意あるスクリプトをブロックする拡張機能の導入</li>
                 <li><strong>ユーザーアカウント制御(UAC)</strong>：管理者権限が必要な操作で確認ダイアログを表示</li>
               </ul>
-              
-              <div class="security-note" style="margin-top: 1rem;">
+
+              <div class="security-note legacy-style-4">
                 💡 <strong>企業向け対策：</strong>社員教育でClickFix攻撃の認知度を高め、定期的なセキュリティ訓練を実施することが重要です。
               </div>
             </div>
@@ -460,9 +464,9 @@
         </div>
       </section>
 
-      <section id="tab-autopaste" class="tab-content">
+      <section id="tab-autopaste" class="tab-content" role="tabpanel" aria-labelledby="tab-autopaste-button">
         <h2>🧲 自動送信攻撃シミュレーション</h2>
-        
+
         <div class="explanation-box">
           <h3>💡 自動送信攻撃とは</h3>
           <p>ユーザーが入力欄に貼り付けを行った瞬間に、その内容を攻撃者のサーバーへ<strong>即座に自動送信</strong>する攻撃です。</p>
@@ -470,7 +474,7 @@
           <div class="security-note">
             🔒 <strong>セキュリティリスク：</strong>APIキー、設定ファイル、SSH鍵などが<strong>リアルタイムで</strong>攻撃者に送信されます。
           </div>
-          <div style="background: #fff3e0; border: 1px solid #ffb74d; padding: 0.8rem; margin-top: 1rem; border-radius: 4px; font-size: 0.9rem;">
+          <div class="legacy-style-2">
             <strong>📋 pasteスニフィングとの違い：</strong><br>
             • <strong>pasteスニフィング</strong>：内容を傍受・記録（後で送信）<br>
             • <strong>自動送信攻撃</strong>：貼り付けと同時に即座に外部送信
@@ -485,14 +489,14 @@
               <div class="step-content">
                 <p>まず、上の自動送信攻撃の説明を読んで仕組みを理解しましょう</p>
                 <small>💡 pasteスニフィングとの違いも確認してください</small>
-                <button class="step-ok-button" onclick="confirmAutoStep1()" style="margin-top: 0.5rem;">✅ 攻撃の仕組みを理解した</button>
+                <button type="button" class="step-ok-button legacy-style-1" data-action="confirmAutoStep1">✅ 攻撃の仕組みを理解した</button>
               </div>
             </div>
             <div class="step" id="auto-step2">
               <span class="step-number">2</span>
               <div class="step-content">
                 <p>テスト用のAPIキーをコピーしましょう（下の文字列をクリックして選択）</p>
-                <code class="sample-text" onclick="selectAutoText(this)">sk-1234567890abcdef1234567890abcdef1234567890abcdef</code>
+                <button type="button" class="sample-text" data-action="selectAutoText" data-self="true">sk-1234567890abcdef1234567890abcdef1234567890abcdef</button>
                 <small>↑ クリックして選択 → Ctrl+Cでコピー</small>
               </div>
             </div>
@@ -500,7 +504,7 @@
               <span class="step-number">3</span>
               <div class="step-content">
                 <p>下の開発者コンソールの入力欄に貼り付けして自動送信攻撃を体験</p>
-                <small>⚠️ 貼り付けた瞬間に外部サーバーへ自動送信されます</small>
+                <small>⚠️ 本物の攻撃では外部送信されます。このデモは表示だけで、実際の通信は行いません。</small>
               </div>
             </div>
             <div class="step" id="auto-step4">
@@ -508,11 +512,11 @@
               <div class="step-content">
                 <p>ログで段階的な攻撃進行を確認し、リアルタイム送信の危険性を学習</p>
                 <small>🎓 送信タイミングと影響について理解を深めましょう</small>
-                <button class="step-ok-button" onclick="confirmAutoStep4()" style="display: none; margin-top: 0.5rem;">✅ 送信攻撃を理解した</button>
+                <button type="button" class="step-ok-button is-hidden legacy-style-1" data-action="confirmAutoStep4">✅ 送信攻撃を理解した</button>
               </div>
             </div>
           </div>
-          <button class="tutorial-reset" onclick="resetAutoTutorial()">🔄 チュートリアルをリセット</button>
+          <button type="button" class="tutorial-reset" data-action="resetAutoTutorial">🔄 チュートリアルをリセット</button>
         </div>
 
         <div class="autopaste-demo">
@@ -536,7 +540,7 @@
                 placeholder="export API_KEY=sk-1234... または設定値を貼り付けてください"
                 class="console-input"
               />
-              <small class="console-hint">💡 .env ファイルや設定ファイルからのコピー&ペーストが便利です</small>
+              <small class="console-hint">💡 上の架空の見本だけを使ってください。実際の秘密情報や設定ファイルは貼り付けないでください。</small>
             </div>
             <div class="console-footer">
               <span class="terminal-indicator">⚡ ターミナル接続中</span>
@@ -544,18 +548,18 @@
             </div>
           </div>
         </div>
-        
+
         <div id="autoLog" class="output-box"></div>
 
         <div class="button-row">
-          <button class="secondary-button" onclick="resetAutoDemo()">🔄 デモをリセット</button>
+          <button type="button" class="secondary-button" data-action="resetAutoDemo">🔄 デモをリセット</button>
         </div>
 
-        <div id="autoCelebrationMessage" class="celebration-message" style="display: none;"></div>
+        <div id="autoCelebrationMessage" class="celebration-message is-hidden"></div>
 
         <!-- 対策方法アコーディオン -->
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleAutoAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleAutoAccordion">
             <h3>🛡️ 自動送信攻撃の対策方法</h3>
             <span class="accordion-icon">▼</span>
           </div>
@@ -570,7 +574,7 @@
                 <li><strong>HTTPS強制</strong>：通信の暗号化でMITM攻撃を防止</li>
               </ul>
             </div>
-            
+
             <div class="explanation-box">
               <h3>👤 ユーザー対策</h3>
               <ul>
@@ -581,7 +585,7 @@
                 <li><strong>定期的なAPIキー更新</strong>：漏洩リスクの最小化</li>
               </ul>
             </div>
-            
+
             <div class="explanation-box">
               <h3>🏢 組織的対策</h3>
               <ul>
@@ -592,7 +596,7 @@
                 <li><strong>定期的監査</strong>：Webアプリケーションのセキュリティチェック</li>
               </ul>
             </div>
-            
+
             <div class="explanation-box">
               <h3>🚨 緊急時対応</h3>
               <ul>
@@ -607,9 +611,9 @@
         </div>
       </section>
 
-      <section id="tab-weirdchar" class="tab-content">
+      <section id="tab-weirdchar" class="tab-content" role="tabpanel" aria-labelledby="tab-weirdchar-button">
         <h2>🧪 Unicode文字細工攻撃</h2>
-        
+
         <div class="explanation-box">
           <h3>💡 Unicode文字細工攻撃とは</h3>
           <p>見た目上は正常に見えるが、実際は不正な文字（ゼロ幅文字、制御文字、RTL文字など）を含む文字列を使った攻撃手法です。</p>
@@ -627,7 +631,7 @@
               <div class="step-content">
                 <p>まず基本的なゼロ幅スペース攻撃を体験しましょう</p>
                 <small>一見普通のファイル名に見えますが、隠された文字が含まれています</small>
-                <button class="step-ok-button" onclick="confirmWeirdStep1()" style="display: inline-block; margin-top: 0.5rem;">✅ 理解しました</button>
+                <button type="button" class="step-ok-button display-inline-block legacy-style-1" data-action="confirmWeirdStep1">✅ 理解しました</button>
               </div>
             </div>
             <div class="step" id="weird-step2">
@@ -649,39 +653,39 @@
               <div class="step-content">
                 <p>すべての攻撃パターンを理解できました</p>
                 <small>🎓 これらの手法がどのように悪用されるかを確認しましょう</small>
-                <button class="step-ok-button" onclick="confirmWeirdStep4()" style="display: none; margin-top: 0.5rem;">✅ 完全理解しました</button>
+                <button type="button" class="step-ok-button is-hidden legacy-style-1" data-action="confirmWeirdStep4">✅ 完全理解しました</button>
               </div>
             </div>
           </div>
-          <button class="tutorial-reset" onclick="resetWeirdTutorial()">🔄 チュートリアルをリセット</button>
+          <button type="button" class="tutorial-reset" data-action="resetWeirdTutorial">🔄 チュートリアルをリセット</button>
         </div>
 
-        <div class="explanation-box" style="background: #fff8e1; border-color: #ffcc02;">
+        <div class="explanation-box legacy-style-6">
           <h3>🎯 攻撃実演デモ</h3>
           <div class="button-row">
-            <button onclick="copyZeroWidthSpaces()" title="ゼロ幅文字が混入されたファイル名をコピー">📁 ゼロ幅スペース攻撃</button>
-            <button onclick="copyRTLTrick()" title="RTL文字による拡張子偽装をコピー">🔄 RTL拡張子偽装</button>
-            <button onclick="copyMixedScript()" title="複数スクリプトが混在した文字列をコピー">🌐 スクリプト混在攻撃</button>
-            <button onclick="copyHomographAttack()" title="同形異義文字による偽装をコピー">👥 同形異義文字攻撃</button>
+            <button type="button" data-action="copyZeroWidthSpaces" title="ゼロ幅文字が混入されたファイル名をコピー">📁 ゼロ幅スペース攻撃</button>
+            <button type="button" data-action="copyRTLTrick" title="RTL文字による拡張子偽装をコピー">🔄 RTL拡張子偽装</button>
+            <button type="button" data-action="copyMixedScript" title="複数スクリプトが混在した文字列をコピー">🌐 スクリプト混在攻撃</button>
+            <button type="button" data-action="copyHomographAttack" title="同形異義文字による偽装をコピー">👥 同形異義文字攻撃</button>
           </div>
         </div>
-        
+
         <div id="weirdOutput" class="output-box"></div>
 
         <div class="button-row">
-          <button class="secondary-button" onclick="resetWeirdDemo()">🔄 デモをリセット</button>
+          <button type="button" class="secondary-button" data-action="resetWeirdDemo">🔄 デモをリセット</button>
         </div>
 
-        <div id="weirdCelebrationMessage" class="celebration-message" style="display: none;"></div>
+        <div id="weirdCelebrationMessage" class="celebration-message is-hidden"></div>
 
         <!-- 攻撃詳細アコーディオン -->
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleWeirdAttackAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleWeirdAttackAccordion">
             <h3>⚠️ 実際の攻撃シナリオ詳細</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div id="weirdAttackAccordionContent" class="accordion-content">
-            <div class="explanation-box" style="background: #fff0f0; border-color: #ffc1c1; margin: 0;">
+            <div class="explanation-box legacy-style-3">
               <h3>🎭 ゼロ幅スペース攻撃</h3>
               <ul>
                 <li><strong>ファイル名偽装</strong>：flag.txt が実際は fla[ZWSP]g.txt となっている</li>
@@ -689,7 +693,7 @@
                 <li><strong>重複ファイル作成</strong>：見た目上同じ名前で複数ファイルを作成</li>
                 <li><strong>セキュリティツール回避</strong>：ブラックリストに載ったファイル名の検出回避</li>
               </ul>
-              
+
               <h3>🔄 RTL文字攻撃</h3>
               <ul>
                 <li><strong>拡張子偽装</strong>：evil[RTL]gnp.exe が exe.png に見える</li>
@@ -697,7 +701,7 @@
                 <li><strong>フィッシング詐欺</strong>：正規サイトそっくりのURLを作成</li>
                 <li><strong>マルウェア配布</strong>：実行ファイルを無害なファイルに偽装</li>
               </ul>
-              
+
               <h3>👥 同形異義文字攻撃</h3>
               <ul>
                 <li><strong>ドメインなりすまし</strong>：аpple.com（キリル文字のа）でapple.comを偽装</li>
@@ -705,8 +709,8 @@
                 <li><strong>認証情報詐取</strong>：正規サイトと見分けがつかない偽サイト作成</li>
                 <li><strong>ソーシャルエンジニアリング</strong>：信頼性の高い企業名を模倣</li>
               </ul>
-              
-              <div class="warning-text" style="margin-top: 1rem;">
+
+              <div class="warning-text legacy-style-4">
                 ⚠️ <strong>重要：</strong>これらの攻撃は視覚的に判別が困難で、技術的な知識がない一般ユーザーでも簡単に騙される可能性があります。
               </div>
             </div>
@@ -715,12 +719,12 @@
 
         <!-- 対策方法アコーディオン -->
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleWeirdCountermeasuresAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleWeirdCountermeasuresAccordion">
             <h3>🛡️ Unicode攻撃の対策方法</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div id="weirdCountermeasuresAccordionContent" class="accordion-content">
-            <div class="explanation-box" style="background: #f0fff0; border-color: #90ee90; margin: 0;">
+            <div class="explanation-box legacy-style-5">
               <h3>🔧 技術的対策</h3>
               <ul>
                 <li><strong>文字列正規化</strong>：Unicode正規化（NFC、NFD）でゼロ幅文字を除去</li>
@@ -729,7 +733,7 @@
                 <li><strong>ファイル名検証</strong>：制御文字やRTL文字の混入を検出</li>
                 <li><strong>フォント設定</strong>：ゼロ幅文字を可視化するフォント使用</li>
               </ul>
-              
+
               <h3>👤 ユーザー対策</h3>
               <ul>
                 <li><strong>URL確認</strong>：アドレスバーを注意深く確認する</li>
@@ -738,7 +742,7 @@
                 <li><strong>セキュリティソフト</strong>：最新のアンチウイルスソフトを使用</li>
                 <li><strong>デベロッパーツール活用</strong>：疑わしいファイル名をコピーして検証</li>
               </ul>
-              
+
               <h3>🏢 システム対策</h3>
               <ul>
                 <li><strong>入力値検証</strong>：Webアプリケーションでの厳密な文字種チェック</li>
@@ -747,8 +751,8 @@
                 <li><strong>DNS設定</strong>：IDN偽装攻撃に対するDNSフィルタリング</li>
                 <li><strong>定期監査</strong>：システム内の不正ファイル名の定期チェック</li>
               </ul>
-              
-              <div class="security-note" style="margin-top: 1rem;">
+
+              <div class="security-note legacy-style-4">
                 💡 <strong>開発者向け：</strong>入力値の検証時は視覚的な類似性だけでなく、Unicode文字の実際のコードポイントを確認することが重要です。
               </div>
             </div>
@@ -756,9 +760,9 @@
         </div>
       </section>
 
-      <section id="tab-tips" class="tab-content">
+      <section id="tab-tips" class="tab-content" role="tabpanel" aria-labelledby="tab-tips-button">
         <h2>🔒 クリップボードセキュリティ完全ガイド</h2>
-        
+
         <div class="explanation-box">
           <h3>💡 このガイドについて</h3>
           <p>このタブでは、クリップボード関連の脅威に対する包括的なセキュリティ対策をまとめています。</p>
@@ -770,12 +774,12 @@
 
         <!-- 一般ユーザー向けTips -->
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleUserTipsAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleUserTipsAccordion">
             <h3>👤 一般ユーザー向けセキュリティ対策</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div id="userTipsAccordionContent" class="accordion-content">
-            <div class="explanation-box" style="background: #f0f8ff; border-color: #87ceeb; margin: 0;">
+            <div class="explanation-box legacy-style-7">
               <h3>🔒 基本的な安全対策</h3>
               <ul>
                 <li><strong>信頼できないサイトでの貼り付け回避</strong>：パスワード、APIキー、個人情報は信頼できるサイトでのみ貼り付け</li>
@@ -784,7 +788,7 @@
                 <li><strong>貼り付け前の確認</strong>：重要な情報は貼り付け前に内容を確認</li>
                 <li><strong>定期的なクリップボードクリア</strong>：機密情報使用後はクリップボードを空にする</li>
               </ul>
-              
+
               <h3>⚠️ 危険な行動パターン</h3>
               <ul>
                 <li><strong>フィッシングサイトでの貼り付け</strong>：URLを確認せずパスワードを貼り付け</li>
@@ -793,7 +797,7 @@
                 <li><strong>不明なサイトでの「修復」ボタンクリック</strong>：ClickFix攻撃への対応</li>
                 <li><strong>ファイル名の見た目だけで判断</strong>：Unicode攻撃による偽装の見落とし</li>
               </ul>
-              
+
               <h3>🛡️ 推奨ツールと設定</h3>
               <ul>
                 <li><strong>ブラウザー設定</strong>：不要なサイトからのクリップボードアクセスを制限</li>
@@ -808,12 +812,12 @@
 
         <!-- 開発者向けTips -->
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleDeveloperTipsAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleDeveloperTipsAccordion">
             <h3>💻 開発者向けセキュリティ実装</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div id="developerTipsAccordionContent" class="accordion-content">
-            <div class="explanation-box" style="background: #f0fff0; border-color: #90ee90; margin: 0;">
+            <div class="explanation-box legacy-style-5">
               <h3>🔧 技術的対策の実装</h3>
               <ul>
                 <li><strong>CSP (Content Security Policy)</strong>：外部への不正通信をブロックするヘッダー設定</li>
@@ -822,7 +826,7 @@
                 <li><strong>ログ記録</strong>：異常なクリップボード操作やpaste イベントの監視</li>
                 <li><strong>暗号化</strong>：機密データの暗号化保存と通信</li>
               </ul>
-              
+
               <h3>📝 安全なコーディング慣行</h3>
               <ul>
                 <li><strong>pasteイベントの最小限使用</strong>：必要最小限での利用とユーザーへの透明性確保</li>
@@ -831,7 +835,7 @@
                 <li><strong>エラーハンドリング</strong>：機密情報を含まないエラーメッセージ</li>
                 <li><strong>セキュリティテスト</strong>：定期的な脆弱性スキャンとペネトレーションテスト</li>
               </ul>
-              
+
               <h3>🎓 セキュアな開発例</h3>
               <ul>
                 <li><strong>Clipboard API の適切な使用</strong>：権限チェックとエラーハンドリング</li>
@@ -846,12 +850,12 @@
 
         <!-- システム管理者向けTips -->
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleAdminTipsAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleAdminTipsAccordion">
             <h3>🏢 システム管理者向け運用対策</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div id="adminTipsAccordionContent" class="accordion-content">
-            <div class="explanation-box" style="background: #fff0f5; border-color: #dda0dd; margin: 0;">
+            <div class="explanation-box legacy-style-8">
               <h3>🛡️ 組織レベルでの対策</h3>
               <ul>
                 <li><strong>ポリシー策定</strong>：クリップボード使用に関するセキュリティポリシーの制定</li>
@@ -860,7 +864,7 @@
                 <li><strong>ネットワーク監視</strong>：異常な外部通信の検出と分析</li>
                 <li><strong>インシデント対応</strong>：クリップボード関連の情報漏洩対応手順</li>
               </ul>
-              
+
               <h3>📊 監視と分析</h3>
               <ul>
                 <li><strong>ログ分析</strong>：Webアプリケーションログでの異常検出</li>
@@ -869,7 +873,7 @@
                 <li><strong>脅威インテリジェンス</strong>：最新の攻撃手法情報の収集</li>
                 <li><strong>定期的監査</strong>：セキュリティ対策の有効性評価</li>
               </ul>
-              
+
               <h3>🚨 インシデント対応</h3>
               <ul>
                 <li><strong>初動対応</strong>：クリップボード攻撃が疑われる場合の緊急手順</li>
@@ -884,14 +888,14 @@
 
         <!-- 緊急対応ガイド -->
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleEmergencyAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleEmergencyAccordion">
             <h3>🚨 緊急時対応ガイド</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div id="emergencyAccordionContent" class="accordion-content">
-            <div class="explanation-box" style="background: #fff5f5; border-color: #ffc1c1; margin: 0;">
+            <div class="explanation-box legacy-style-9">
               <h3>⚡ クリップボード攻撃を受けた場合</h3>
-              <ol style="line-height: 1.8;">
+              <ol class="legacy-style-10">
                 <li><strong>即座に切断</strong>：疑わしいサイトからすぐに離れる</li>
                 <li><strong>クリップボードクリア</strong>：機密情報をクリップボードから削除</li>
                 <li><strong>パスワード変更</strong>：影響を受ける可能性のあるアカウント</li>
@@ -901,7 +905,7 @@
                 <li><strong>証拠保全</strong>：スクリーンショットやログの保存</li>
                 <li><strong>影響調査</strong>：漏洩した可能性のあるデータの特定</li>
               </ol>
-              
+
               <h3>🔍 被害確認の方法</h3>
               <ul>
                 <li><strong>ブラウザーの開発者ツール</strong>：Networkタブで不審な通信を確認</li>
@@ -910,7 +914,7 @@
                 <li><strong>システムログ</strong>：企業環境での異常なアクセスパターン検出</li>
                 <li><strong>メール確認</strong>：アカウント変更通知などの有無</li>
               </ul>
-              
+
               <h3>📞 連絡先と報告</h3>
               <ul>
                 <li><strong>組織内セキュリティチーム</strong>：社内CSIRT or情報システム部門</li>
@@ -925,13 +929,13 @@
 
         <!-- 最新脅威情報 -->
         <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleThreatInfoAccordion()">
+          <div role="button" tabindex="0" aria-expanded="false" class="accordion-header" data-action="toggleThreatInfoAccordion">
             <h3>🔍 最新脅威動向と対策トレンド</h3>
             <span class="accordion-icon">▼</span>
           </div>
           <div id="threatInfoAccordionContent" class="accordion-content">
-            <div class="explanation-box" style="background: #f8f8ff; border-color: #dcd0ff; margin: 0;">
-              <h3>📈 2024年のクリップボード攻撃トレンド</h3>
+            <div class="explanation-box legacy-style-11">
+              <h3>📈 クリップボード攻撃の主な傾向</h3>
               <ul>
                 <li><strong>AI生成フィッシング</strong>：より巧妙化するソーシャルエンジニアリング手法</li>
                 <li><strong>モバイル端末への拡大</strong>：スマートフォン・タブレットでの攻撃増加</li>
@@ -939,7 +943,7 @@
                 <li><strong>サプライチェーン攻撃</strong>：信頼できるソフトウェアの悪用</li>
                 <li><strong>暗号資産狙い撃ち</strong>：ウォレットアドレスやシードフレーズの狙い撃ち</li>
               </ul>
-              
+
               <h3>🛡️ 新しい防御技術</h3>
               <ul>
                 <li><strong>機械学習ベースの検知</strong>：異常な貼り付けパターンの自動検出</li>
@@ -948,7 +952,7 @@
                 <li><strong>リアルタイム脅威インテリジェンス</strong>：最新攻撃手法の即座な対応</li>
                 <li><strong>分離実行環境</strong>：仮想環境での安全な操作</li>
               </ul>
-              
+
               <h3>🎯 今後予想される脅威</h3>
               <ul>
                 <li><strong>量子コンピューティング対応</strong>：既存暗号化の突破と対策</li>
@@ -962,13 +966,13 @@
         </div>
 
         <!-- チェックリスト -->
-        <div class="explanation-box" style="background: #f0f8f0; border-color: #98fb98; margin-top: 2rem;">
+        <div class="explanation-box legacy-style-12">
           <h3>✅ セキュリティチェックリスト</h3>
           <div class="button-row">
-            <button onclick="showUserChecklist()" title="個人ユーザー向けチェック項目">👤 個人用チェック</button>
-            <button onclick="showDeveloperChecklist()" title="開発者向けチェック項目">💻 開発者用チェック</button>
-            <button onclick="showAdminChecklist()" title="システム管理者向けチェック項目">🏢 管理者用チェック</button>
-            <button onclick="resetTipsDemo()" class="secondary-button">🔄 リセット</button>
+            <button type="button" data-action="showUserChecklist" title="個人ユーザー向けチェック項目">👤 個人用チェック</button>
+            <button type="button" data-action="showDeveloperChecklist" title="開発者向けチェック項目">💻 開発者用チェック</button>
+            <button type="button" data-action="showAdminChecklist" title="システム管理者向けチェック項目">🏢 管理者用チェック</button>
+            <button type="button" data-action="resetTipsDemo" class="secondary-button">🔄 リセット</button>
           </div>
         </div>
 
@@ -979,18 +983,18 @@
     </main>
 
     <!-- ヘルプモーダル -->
-    <div id="helpModal" class="modal" style="display: none;">
+    <div id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle" class="modal is-hidden">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>❓ ClipThreat Studio ヘルプ</h2>
-          <button class="modal-close" onclick="closeHelpModal()">×</button>
+          <h2 id="helpTitle">❓ ClipThreat Studio ヘルプ</h2>
+          <button type="button" class="modal-close" aria-label="閉じる" data-action="closeHelpModal">×</button>
         </div>
         <div class="modal-body">
           <div class="help-section">
             <h3>🎯 このツールについて</h3>
             <p>ClipThreat Studioは、クリップボード関連のセキュリティ脅威を体験・学習するための教育ツールです。</p>
           </div>
-          
+
           <div class="help-section">
             <h3>📋 各タブの機能</h3>
             <ul>
@@ -1003,7 +1007,7 @@
               <li><strong>🔒 セキュリティTips</strong>：包括的なセキュリティ対策ガイド</li>
             </ul>
           </div>
-          
+
           <div class="help-section">
             <h3>🔧 使い方のコツ</h3>
             <ul>
@@ -1013,7 +1017,7 @@
               <li><strong>詳細調査</strong>：文字細工タブではWeirdString Inspectorと連携できます</li>
             </ul>
           </div>
-          
+
           <div class="help-section">
             <h3>⚠️ 注意事項</h3>
             <ul>
@@ -1023,18 +1027,18 @@
               <li>ブラウザーによってはクリップボード権限の許可が必要です</li>
             </ul>
           </div>
-          
+
           <div class="help-section">
             <h3>🔗 関連リンク</h3>
             <ul>
-              <li><a href="https://github.com/ipusiron/clipthreat-studio" target="_blank">GitHubリポジトリ</a></li>
-              <li><a href="https://ipusiron.github.io/weirdstring-inspector/" target="_blank">WeirdString Inspector</a></li>
-              <li><a href="https://akademeia.info/?page_id=42163" target="_blank">生成AIで作るセキュリティツール100</a></li>
+              <li><a href="https://github.com/ipusiron/clipthreat-studio" target="_blank" rel="noopener noreferrer">GitHubリポジトリ</a></li>
+              <li><a href="https://ipusiron.github.io/weirdstring-inspector/" target="_blank" rel="noopener noreferrer">WeirdString Inspector</a></li>
+              <li><a href="https://akademeia.info/?page_id=42163" target="_blank" rel="noopener noreferrer">生成AIで作るセキュリティツール100</a></li>
             </ul>
           </div>
         </div>
         <div class="modal-footer">
-          <button onclick="closeHelpModal()" class="button">閉じる</button>
+          <button type="button" data-action="closeHelpModal" class="button">閉じる</button>
         </div>
       </div>
     </div>
@@ -1042,20 +1046,20 @@
     <footer>
       <div class="footer">
         🔗 GitHubリポジトリはこちら（
-        <a href="https://github.com/ipusiron/clipthreat-studio" target="_blank"
+        <a href="https://github.com/ipusiron/clipthreat-studio" target="_blank" rel="noopener noreferrer"
           >ipusiron/clipthreat-studio</a
         >
         ）
       </div>
     </footer>
-	
-    <script src="js/main.js"></script>
-    <script src="js/clipboard.js"></script>
-    <script src="js/watch.js"></script>
-    <script src="js/sniff.js"></script>
-    <script src="js/clickfix.js"></script>
-    <script src="js/autopaste.js"></script>
-    <script src="js/weirdchar.js"></script>
-    <script src="js/tips.js"></script>
+
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/clipboard.js"></script>
+    <script type="module" src="js/watch.js"></script>
+    <script type="module" src="js/sniff.js"></script>
+    <script type="module" src="js/clickfix.js"></script>
+    <script type="module" src="js/autopaste.js"></script>
+    <script type="module" src="js/weirdchar.js"></script>
+    <script type="module" src="js/tips.js"></script>
   </body>
 </html>
