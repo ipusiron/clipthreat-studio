@@ -1,107 +1,93 @@
+import { writeClipboardText, installDemoResets, createDemoTimers } from './clipboard-access.js';
+import { escapeHtml } from './shared.js';
+import { m } from './clipthreat-messages.js';
+
 // tips.js - セキュリティTips表示処理
 
 window.addEventListener("DOMContentLoaded", () => {
+  const timers = createDemoTimers();
   const tipsOutput = document.getElementById("tipsOutput");
 
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
 
   function showChecklist(title, items, description) {
     const timestamp = new Date().toLocaleTimeString('ja-JP');
-    
+
     const checklistHtml = items.map((item, index) => {
       return `
-        <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin: 0.5rem 0; padding: 0.5rem; background: #f9f9f9; border-radius: 4px;">
-          <input type="checkbox" id="check-${index}" style="margin-top: 0.2rem; width: auto;">
-          <label for="check-${index}" style="flex: 1; cursor: pointer; line-height: 1.5;">
+        <div class="display-flex legacy-style-13">
+          <input type="checkbox" id="check-${index}" class="legacy-style-14">
+          <label for="check-${index}" class="legacy-style-15">
             <strong>${item.category}:</strong> ${item.description}
-            ${item.priority ? `<span style="color: ${item.priority === 'high' ? '#d32f2f' : item.priority === 'medium' ? '#f57c00' : '#388e3c'}; font-size: 0.8rem; margin-left: 0.5rem;">[${item.priority === 'high' ? '高優先度' : item.priority === 'medium' ? '中優先度' : '低優先度'}]</span>` : ''}
+            ${item.priority ? `<span class="priority-${item.priority}">[${
+              item.priority === 'high' ? m('tips.70') : item.priority === 'medium' ? m('tips.69') : m('tips.68')
+            }]</span>` : ''}
           </label>
         </div>
       `;
     }).join('');
 
-    tipsOutput.innerHTML = `
-      <div class="clipboard-result">
-        <div class="action-info">
-          <span class="action">✅ ${title}</span>
-          <span class="timestamp">${timestamp}</span>
-        </div>
-        <div class="content-info">
-          <div class="preview">
-            <p style="margin-top: 0;"><strong>${description}</strong></p>
-            ${checklistHtml}
-            <div style="margin-top: 1rem; padding: 0.5rem; background: #e3f2fd; border-radius: 4px; font-size: 0.9rem;">
-              💡 <strong>使い方：</strong>各項目をチェックして、自身のセキュリティ対策状況を確認してください。すべてチェックできるよう対策を進めましょう。
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+    tipsOutput.innerHTML = m('tips.67', [title, timestamp, description, checklistHtml]);
   }
 
   // 個人ユーザー向けチェックリスト
   window.showUserChecklist = function() {
     const userItems = [
       {
-        category: "ブラウザー設定",
-        description: "クリップボードアクセス権限を信頼できるサイトのみに制限している",
+        category: m('tips.66'),
+        description: m('tips.65'),
         priority: "high"
       },
       {
-        category: "パスワード管理",
-        description: "パスワードマネージャーを使用し、手動コピペを最小限に抑えている",
+        category: m('tips.64'),
+        description: m('tips.63'),
         priority: "high"
       },
       {
-        category: "サイト確認",
-        description: "重要な情報を貼り付ける前にURLとSSL証明書を確認している",
+        category: m('tips.62'),
+        description: m('tips.61'),
         priority: "high"
       },
       {
-        category: "2要素認証",
-        description: "重要なアカウントには2要素認証を設定している",
+        category: m('tips.60'),
+        description: m('tips.59'),
         priority: "high"
       },
       {
-        category: "クリップボード管理",
-        description: "機密情報使用後は必ずクリップボードをクリアしている",
+        category: m('tips.58'),
+        description: m('tips.57'),
         priority: "medium"
       },
       {
-        category: "ソフトウェア更新",
-        description: "ブラウザーとセキュリティソフトを最新版に保っている",
+        category: m('tips.56'),
+        description: m('tips.55'),
         priority: "medium"
       },
       {
-        category: "公共端末利用",
-        description: "共有PCやカフェのWi-Fiで機密情報を扱わない",
+        category: m('tips.54'),
+        description: m('tips.53'),
         priority: "medium"
       },
       {
-        category: "フィッシング対策",
-        description: "怪しいメールのリンクから貼り付け操作を求められても応じない",
+        category: m('tips.52'),
+        description: m('tips.51'),
         priority: "medium"
       },
       {
-        category: "バックアップ",
-        description: "重要なデータは定期的にバックアップを取っている",
+        category: m('tips.50'),
+        description: m('tips.49'),
         priority: "low"
       },
       {
-        category: "セキュリティ教育",
-        description: "最新のサイバー攻撃手法について定期的に情報収集している",
+        category: m('tips.48'),
+        description: m('tips.47'),
         priority: "low"
       }
     ];
 
     showChecklist(
-      "個人ユーザー向けセキュリティチェックリスト",
+      m('tips.46'),
       userItems,
-      "日常のクリップボード使用における個人レベルでのセキュリティ対策を確認しましょう。"
+      m('tips.45')
     );
   };
 
@@ -109,61 +95,61 @@ window.addEventListener("DOMContentLoaded", () => {
   window.showDeveloperChecklist = function() {
     const devItems = [
       {
-        category: "CSP設定",
-        description: "Content Security Policyを適切に設定し、外部への不正通信をブロックしている",
+        category: m('tips.44'),
+        description: m('tips.43'),
         priority: "high"
       },
       {
-        category: "入力値検証",
-        description: "pasteイベントで取得したデータに対して厳密なバリデーションを実装している",
+        category: m('tips.42'),
+        description: m('tips.41'),
         priority: "high"
       },
       {
-        category: "HTTPS強制",
-        description: "すべての通信をHTTPS化し、クリップボードAPIを安全に使用している",
+        category: m('tips.40'),
+        description: m('tips.39'),
         priority: "high"
       },
       {
-        category: "エラーハンドリング",
-        description: "機密情報を含まないエラーメッセージとログ出力を実装している",
+        category: m('tips.38'),
+        description: m('tips.37'),
         priority: "high"
       },
       {
         category: "Rate Limiting",
-        description: "短時間での大量リクエストを制限するAPI設計を実装している",
+        description: m('tips.36'),
         priority: "medium"
       },
       {
-        category: "監査ログ",
-        description: "セキュリティイベントの適切な記録と分析システムを構築している",
+        category: m('tips.35'),
+        description: m('tips.34'),
         priority: "medium"
       },
       {
-        category: "依存関係管理",
-        description: "サードパーティライブラリの脆弱性を定期的にチェックしている",
+        category: m('tips.33'),
+        description: m('tips.32'),
         priority: "medium"
       },
       {
-        category: "セキュリティテスト",
-        description: "定期的な脆弱性スキャンとペネトレーションテストを実施している",
+        category: m('tips.31'),
+        description: m('tips.30'),
         priority: "medium"
       },
       {
-        category: "コードレビュー",
-        description: "pasteイベントハンドラーを含むセキュリティ関連コードのレビュー体制がある",
+        category: m('tips.29'),
+        description: m('tips.28'),
         priority: "low"
       },
       {
-        category: "インシデント対応",
-        description: "セキュリティインシデント発生時の対応手順が文書化されている",
+        category: m('tips.27'),
+        description: m('tips.26'),
         priority: "low"
       }
     ];
 
     showChecklist(
-      "開発者向けセキュリティチェックリスト",
+      m('tips.25'),
       devItems,
-      "Webアプリケーション開発におけるクリップボード関連のセキュリティ実装を確認しましょう。"
+      m('tips.24')
     );
   };
 
@@ -171,67 +157,67 @@ window.addEventListener("DOMContentLoaded", () => {
   window.showAdminChecklist = function() {
     const adminItems = [
       {
-        category: "セキュリティポリシー",
-        description: "クリップボード使用に関する組織のセキュリティポリシーを策定・周知している",
+        category: m('tips.23'),
+        description: m('tips.22'),
         priority: "high"
       },
       {
-        category: "従業員教育",
-        description: "定期的なセキュリティ意識向上研修を実施している",
+        category: m('tips.21'),
+        description: m('tips.20'),
         priority: "high"
       },
       {
-        category: "エンドポイント保護",
-        description: "クリップボード監視機能を持つEDRソリューションを導入している",
+        category: m('tips.19'),
+        description: m('tips.18'),
         priority: "high"
       },
       {
-        category: "ネットワーク監視",
-        description: "異常な外部通信を検出する監視システムを運用している",
+        category: m('tips.17'),
+        description: m('tips.16'),
         priority: "high"
       },
       {
-        category: "インシデント対応体制",
-        description: "クリップボード関連のセキュリティインシデント対応手順が確立されている",
+        category: m('tips.15'),
+        description: m('tips.14'),
         priority: "medium"
       },
       {
-        category: "ログ分析",
-        description: "Webアプリケーションログの異常検出システムを運用している",
+        category: m('tips.13'),
+        description: m('tips.12'),
         priority: "medium"
       },
       {
-        category: "DLP導入",
-        description: "Data Loss Prevention ツールで機密情報の流出を防いでいる",
+        category: m('tips.11'),
+        description: m('tips.10'),
         priority: "medium"
       },
       {
-        category: "脅威インテリジェンス",
-        description: "最新の攻撃手法情報を定期的に収集・分析している",
+        category: m('tips.9'),
+        description: m('tips.8'),
         priority: "medium"
       },
       {
-        category: "定期監査",
-        description: "セキュリティ対策の有効性を定期的に評価・改善している",
+        category: m('tips.7'),
+        description: m('tips.6'),
         priority: "low"
       },
       {
-        category: "事業継続計画",
-        description: "重大なセキュリティインシデント発生時の事業継続計画がある",
+        category: m('tips.5'),
+        description: m('tips.4'),
         priority: "low"
       }
     ];
 
     showChecklist(
-      "システム管理者向けセキュリティチェックリスト",
+      m('tips.3'),
       adminItems,
-      "組織レベルでのクリップボードセキュリティ対策と運用体制を確認しましょう。"
+      m('tips.2')
     );
   };
 
   // リセット機能
   window.resetTipsDemo = function() {
-    tipsOutput.innerHTML = '<div class="message info">📋 上のボタンからセキュリティチェックリストを表示できます。自身の役割に応じて確認してください。</div>';
+    tipsOutput.innerHTML = m('tips.1');
   };
 
   // アコーディオン機能
@@ -239,10 +225,10 @@ window.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector('#userTipsAccordionContent').previousElementSibling;
     const content = document.getElementById('userTipsAccordionContent');
     const icon = header.querySelector('.accordion-icon');
-    
+
     header.classList.toggle('active');
     content.classList.toggle('open');
-    
+
     if (content.classList.contains('open')) {
       icon.textContent = '▲';
     } else {
@@ -254,10 +240,10 @@ window.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector('#developerTipsAccordionContent').previousElementSibling;
     const content = document.getElementById('developerTipsAccordionContent');
     const icon = header.querySelector('.accordion-icon');
-    
+
     header.classList.toggle('active');
     content.classList.toggle('open');
-    
+
     if (content.classList.contains('open')) {
       icon.textContent = '▲';
     } else {
@@ -269,10 +255,10 @@ window.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector('#adminTipsAccordionContent').previousElementSibling;
     const content = document.getElementById('adminTipsAccordionContent');
     const icon = header.querySelector('.accordion-icon');
-    
+
     header.classList.toggle('active');
     content.classList.toggle('open');
-    
+
     if (content.classList.contains('open')) {
       icon.textContent = '▲';
     } else {
@@ -284,10 +270,10 @@ window.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector('#emergencyAccordionContent').previousElementSibling;
     const content = document.getElementById('emergencyAccordionContent');
     const icon = header.querySelector('.accordion-icon');
-    
+
     header.classList.toggle('active');
     content.classList.toggle('open');
-    
+
     if (content.classList.contains('open')) {
       icon.textContent = '▲';
     } else {
@@ -299,14 +285,15 @@ window.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector('#threatInfoAccordionContent').previousElementSibling;
     const content = document.getElementById('threatInfoAccordionContent');
     const icon = header.querySelector('.accordion-icon');
-    
+
     header.classList.toggle('active');
     content.classList.toggle('open');
-    
+
     if (content.classList.contains('open')) {
       icon.textContent = '▲';
     } else {
       icon.textContent = '▼';
     }
   };
+  installDemoResets(["resetTipsDemo"], tipsOutput, () => timers.cancel());
 });
