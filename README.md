@@ -283,10 +283,11 @@ READMEの表・数値・画像参照もテストで検証します。
 | 文字細工のコピー例 | 4 |
 | Tipsチェックリスト | 3 |
 | 各チェックリストの項目 | 10 |
-| テストファイル | 7 |
+| テストファイル | 8 |
 
 - `test/shared.test.js`：種別・文字判定、エスケープ、Day023連携URL、伏せ字
 - `test/pastecheck.test.js`：貼り付け前チェックの判定表・境界・安全表示
+- `test/i18n.test.js`：日英辞書・補間・言語決定順・静的文言の翻訳漏れ
 - `test/safety.test.js`：無害文言、遅延処理の取り消し、書き込み順序
 - `test/html.test.js`：CSP、外部モジュール、ARIA、インライン処理の不在
 - `test/contrast.test.js`：配色のコントラスト
@@ -348,6 +349,9 @@ clipthreat-studio/                 # 教育ツール本体
 │   ├── clipboard.js              # 基本操作
 │   ├── clipboard-access.js       # 書き込み順序と後始末
 │   ├── clipthreat-messages.js     # 日本語の表示辞書
+│   ├── clipthreat-messages-en.js  # 動的表示の英語辞書
+│   ├── clipthreat-ui-messages.js  # 静的画面・属性の日英辞書
+│   ├── i18n.js                   # 言語切り替えと画面の再描画
 │   ├── main.js                   # タブ・ヘルプ・イベント制御
 │   ├── pastecheck.js             # 読み取り専用の貼り付け前チェック
 │   ├── shared.js                 # DOM非依存の判定・URL・伏せ字
@@ -362,6 +366,7 @@ clipthreat-studio/                 # 教育ツール本体
     ├── contrast.test.js          # 配色の検証
     ├── format.test.js            # 行長・minify検証
     ├── html.test.js              # 画面構造とCSPの検証
+    ├── i18n.test.js              # 日英辞書と表示漏れの検証
     ├── readme.test.js            # 文書・件数・画像の検証
     ├── safety.test.js            # 安全化・後始末の検証
     ├── pastecheck.test.js        # 貼り付け前チェックの判定と境界の検証

@@ -1,4 +1,5 @@
-// Japanese UI messages. HTML interpolation is escaped at the call site.
+import { createEnglishMessages } from './clipthreat-messages-en.js';
+// HTML interpolation is escaped at the call site.
 export const messages = {
   "clipboard.cleared": "クリップボードを空に戻しました。",
   "clipboard.unavailable": "クリップボードを空にできませんでした。権限または対応状況を確認し、手動で空にしてください。",
@@ -534,6 +535,8 @@ export const messages = {
 };
 
 Object.assign(messages, {
+  'language.toggle': 'English',
+  'language.label': '英語に切り替え（デモをリセット）',
   'paste.warning': '危険の兆候あり。内容と貼り付け先を確認してください。',
   'paste.clear': '問題なし。今回の検出対象は見つかりませんでした。安全を保証する判定ではありません。',
   'paste.tooLong': '入力は100,000コードポイント以内にしてください。',
@@ -546,8 +549,32 @@ Object.assign(messages, {
   'paste.reset': '入力と結果を初期化しました。クリップボードは変更していません。'
 });
 
+export const dictionaries = { ja: messages, en: createEnglishMessages(messages) };
+
+export function resolveLanguage(search = '', saved = null, browserLanguage = 'ja') {
+  const requested = new URLSearchParams(search).get('lang');
+  if (requested === 'ja' || requested === 'en') return requested;
+  if (saved === 'ja' || saved === 'en') return saved;
+  return /^ja(?:-|$)/i.test(browserLanguage) ? 'ja' : 'en';
+}
+
+function initialLanguage() {
+  if (typeof document === 'undefined') return 'ja';
+  let saved = null;
+  try { saved = localStorage.getItem('clipthreat-language'); } catch { /* Storage can be blocked. */ }
+  return resolveLanguage(location.search, saved, navigator.language);
+}
+
+let language = initialLanguage();
+export const getLanguage = () => language;
+export function setLanguage(next) {
+  if (next !== 'ja' && next !== 'en') throw new Error('Unsupported language');
+  language = next;
+  try { localStorage.setItem('clipthreat-language', next); } catch { /* Storage can be blocked. */ }
+}
+
 export function m(key, values = []) {
-  const message = messages[key];
+  const message = dictionaries[language][key];
   if (message === undefined) throw new Error('Unknown message: ' + key);
   return Array.isArray(message)
     ? message.map((part, index) => part + (values[index] ?? '')).join('')
