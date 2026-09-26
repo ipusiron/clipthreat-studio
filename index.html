@@ -16,6 +16,7 @@
       <div class="header-content">
         <div class="header-title">
           <h1>🧪 ClipThreat Studio</h1>
+          <button type="button" id="language-toggle" aria-label="Switch to English" aria-pressed="false">English</button>
           <button type="button" class="help-button" data-action="showHelpModal" title="ヘルプ・使い方を表示">❓</button>
         </div>
         <p>クリップボード悪用攻撃の可視化＆体験ツール</p>
@@ -38,9 +39,28 @@
       <button type="button" class="tab-button" data-tab="tab-tips" id="tab-tips-button" role="tab" aria-controls="tab-tips" aria-selected="false" tabindex="-1">
         🔒 セキュリティTips
       </button>
+      <button type="button" class="tab-button" data-tab="tab-pastecheck" id="tab-pastecheck-button"
+        role="tab" aria-controls="tab-pastecheck" aria-selected="false" tabindex="-1">🛡️ 貼り付け前チェック</button>
     </nav>
 
     <main>
+      <section id="tab-pastecheck" class="tab-content" role="tabpanel" aria-labelledby="tab-pastecheck-button">
+        <h2>🛡️ 貼り付け前チェック</h2>
+        <p>見えない文字・方向の制御文字・Latin／Cyrillic／Greekの混在を調べます。安全を保証するものではありません。</p>
+        <label for="pastecheckInput">チェックするテキスト（最大100,000コードポイント）</label>
+        <textarea id="pastecheckInput" rows="4"></textarea>
+        <div class="button-group">
+          <button type="button" data-action="runPasteCheck">チェックする</button>
+          <button type="button" data-action="readPasteCheck">クリップボードを読み取ってチェック</button>
+          <button type="button" data-action="resetPasteCheck">リセット</button>
+        </div>
+        <p id="pastecheckStatus" role="status" aria-live="polite"></p>
+        <div id="pastecheckResult"></div>
+        <pre id="pastecheckSafe" class="pastecheck-safe"></pre>
+        <button type="button" data-action="inspectPasteCheck">WeirdString Inspectorで詳しく調べる</button>
+        <p>クリップボードへの書き込みや外部送信はしません。連携先にはURLのハッシュで渡すため、サーバーへは送られません。
+          連携先の画面は内容を読み取れます。機密情報は渡さないでください。</p>
+      </section>
       <section id="tab-clipboard" class="tab-content active" role="tabpanel" aria-labelledby="tab-clipboard-button">
         <h2>📋 クリップボード基本操作</h2>
 
@@ -1054,6 +1074,7 @@
     </footer>
 
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/pastecheck.js"></script>
     <script type="module" src="js/clipboard.js"></script>
     <script type="module" src="js/watch.js"></script>
     <script type="module" src="js/sniff.js"></script>

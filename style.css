@@ -1509,6 +1509,14 @@ button[title]:hover::after {
   margin-top: 0;
 }
 
+.pastecheck-safe {
+  direction: ltr;
+  unicode-bidi: bidi-override;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+
 .legacy-style-24 {
   margin-top: 1rem;
   padding: 0.5rem;

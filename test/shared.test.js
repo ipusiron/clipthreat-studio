@@ -73,7 +73,7 @@ test('pure module is DOM-free and has no Japanese literal or pipe character clas
 
 test('every UI dictionary reference exists; UI modules contain no Japanese outside comments', () => {
   for (const name of readdirSync(new URL('../js/', import.meta.url))) {
-    if (name === 'clipthreat-messages.js') continue;
+    if (['clipthreat-messages.js', 'clipthreat-ui-messages.js'].includes(name)) continue;
     const source = readFileSync(new URL('../js/' + name, import.meta.url), 'utf8');
     for (const match of source.matchAll(/\bm\('([^']+)'/g)) assert.ok(Object.hasOwn(messages, match[1]), `${name}:${match[1]}`);
     const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');

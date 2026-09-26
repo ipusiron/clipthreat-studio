@@ -57,3 +57,48 @@ export function buildInspectorUrl(text, attackType) {
 export function clickFixPreview() {
   return { key: 'clickfix.masked', values: ['PowerShell'] };
 }
+
+export const PASTE_CHECK_LIMIT = 100000;
+
+const invisibleNames = new Map([
+  [0x00AD, 'SHY'], [0x180E, 'MVS'], [0x200B, 'ZWSP'], [0x200C, 'ZWNJ'],
+  [0x200D, 'ZWJ'], [0x2060, 'WJ'], [0xFEFF, 'BOM']
+]);
+const bidiNames = new Map([
+  [0x200E, 'LRM'], [0x200F, 'RLM'], [0x202A, 'LRE'], [0x202B, 'RLE'],
+  [0x202C, 'PDF'], [0x202D, 'LRO'], [0x202E, 'RLO'],
+  [0x2066, 'LRI'], [0x2067, 'RLI'], [0x2068, 'FSI'], [0x2069, 'PDI']
+]);
+const scripts = [['Latin', /\p{Script=Latin}/u], ['Cyrillic', /\p{Script=Cyrillic}/u], ['Greek', /\p{Script=Greek}/u]];
+
+export function classifyPasteCharacter(char) {
+  const cp = char.codePointAt(0);
+  const hex = cp.toString(16).toUpperCase().padStart(4, '0');
+  if (bidiNames.has(cp)) return { key: 'bidi', hex, name: bidiNames.get(cp) };
+  if (invisibleNames.has(cp) || (cp >= 0xE0000 && cp <= 0xE007F)) {
+    return { key: 'invisible', hex, name: invisibleNames.get(cp) || 'TAG' };
+  }
+  return { key: 'normal', hex, name: '' };
+}
+
+export function checkPasteText(text) {
+  const characters = Array.from(String(text));
+  if (characters.length > PASTE_CHECK_LIMIT) return { key: 'paste.tooLong', limit: PASTE_CHECK_LIMIT };
+  const invisible = [], bidi = [], alphabet = [];
+  const safe = [];
+  characters.forEach((char, index) => {
+    const item = { ...classifyPasteCharacter(char), position: index + 1 };
+    if (item.key === 'invisible') invisible.push(item);
+    if (item.key === 'bidi') bidi.push(item);
+    safe.push(item.key === 'normal' ? char : `[U+${item.hex} ${item.name}]`);
+    const script = scripts.find(([, pattern]) => pattern.test(char));
+    if (script) alphabet.push({ script: script[0], position: index + 1 });
+  });
+  const groups = [...new Set(alphabet.map(item => item.script))];
+  const mixed = groups.length > 1;
+  return {
+    key: invisible.length || bidi.length || mixed ? 'paste.warning' : 'paste.clear',
+    length: characters.length, invisible, bidi, mixed, groups,
+    mixedCharacters: mixed ? alphabet : [], safeText: safe.join('')
+  };
+}

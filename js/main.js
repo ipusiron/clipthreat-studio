@@ -1,4 +1,5 @@
 import { setDisplay } from './ui.js';
+import './i18n.js';
 // main.js - タブ切り替え制御（ClipThreat Studio）
 
 window.addEventListener("DOMContentLoaded", () => {
