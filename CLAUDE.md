@@ -14,10 +14,15 @@ The project consists of a single-page application with tab-based navigation:
 - **style.css**: Styling for cards, tabs, and warning elements
 - **js/main.js**: Tab switching controller
 - **js/shared.js**: Pure classification, escaping, Unicode, fragment URL and redaction helpers
-- **js/clipthreat-messages.js**: Japanese UI dictionary; fixed HTML templates only
+- **js/clipthreat-messages.js**: Japanese dictionary, locale resolution and `m()`; fixed escaped HTML templates only
+- **js/clipthreat-messages-en.js**: English dynamic messages with matching keys and interpolation slots
+- **js/clipthreat-ui-messages.js**: Paired Japanese/English static text and attribute dictionary
+- **js/i18n.js**: Static text/attribute rendering, language toggle and demo cleanup
+- **js/pastecheck.js**: Read-only clipboard/text inspection and safe result rendering
 - **js/clipboard-access.js**: Serialized writes, reset cleanup and cancellable demo timers
 - **js/ui.js**: Display changes through CSS classes
-- **test/**: Six dependency-free Node test files
+- **test/**: Eight dependency-free Node test files, including pastecheck and i18n tests
+- **README.en.md**: Full English translation, with matching headings, tables and file tree
 - **.github/workflows/test.yml**: Node 22 tests on push and pull_request
 - **js/*.js**: Individual modules for each security demonstration:
   - `clipboard.js`: Basic clipboard read/write operations
@@ -48,6 +53,21 @@ python -m http.server 8000 --bind 127.0.0.1
 ```
 
 ## Testing
+
+Pre-paste check classifies invisible characters (U+00AD, U+180E, U+200B–U+200D, U+2060, U+FEFF,
+U+E0000–U+E007F) and bidi controls (U+200E, U+200F, U+202A–U+202E, U+2066–U+2069).
+Mixed-script detection counts only Latin, Cyrillic and Greek; two or more groups trigger a warning.
+Positions are one-based Unicode code points, up to 100,000. Mixed positions include all characters
+from these groups in a mixed string. Controls are replaced by visible code-point labels in an LTR box.
+Detection indicates presence, not malicious intent; no findings is not a safety guarantee.
+The tab reads only on user action and never writes. Read-only reset invalidates pending reads.
+Its Inspector link uses attack_type=paste-check in the fragment, with noopener,noreferrer.
+
+Language precedence: URL ?lang=ja|en, saved clipthreat-language, then navigator.language
+(Japanese for ja, English otherwise). Storage denial is handled. Switching resets demos through
+their cleanup paths and clears demo clipboard content; the pre-paste tab itself remains read-only.
+All hidden text, help, titles, labels and dynamic output must have English translations.
+Maintain matched dictionary keys, interpolation counts and README heading mappings.
 
 Run `npm test` with Node 22 or newer. No dependencies or installation required.
 Tests cover pure helpers, harmless ClickFix text, cleanup sequencing, HTML, contrast, formatting and README data.

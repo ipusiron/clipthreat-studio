@@ -11,7 +11,6 @@ window.addEventListener("DOMContentLoaded", () => {
   let clickfixTutorialStep = 1;
 
   // OSクリップボードへは説明文のみ。実行可能なコマンドを保持しない。
-  const payload = m('clickfix.safe');
   const timers = createDemoTimers();
   logArea.setAttribute('aria-live', 'polite');
   logArea.closest('.tab-content').addEventListener('demoleave', () => window.resetClickFixTutorial());
@@ -77,6 +76,7 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   function simulateClipboardCopy() {
+    const payload = m('clickfix.safe');
     const generation = timers.generation;
     writeClipboardText(payload).then(() => {
       if (generation !== timers.generation) return;

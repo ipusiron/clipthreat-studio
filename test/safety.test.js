@@ -8,6 +8,7 @@ test('ClickFix writes a fixed harmless explanation, renders redaction with textC
   assert.equal(m('clickfix.safe'), 'これは ClipThreat Studio のデモです。攻撃コマンドはクリップボードに書き込まれていません。');
   const source = readFileSync(new URL('../js/clickfix.js', import.meta.url), 'utf8');
   assert.match(source, /const payload = m\('clickfix.safe'\)/);
+  assert.match(source, /function simulateClipboardCopy\(\) \{\s+const payload = m\('clickfix.safe'\)/);
   assert.match(source, /preview.textContent = m\(result.key, result.values\)/);
   assert.doesNotMatch(source, /backdoor\.ps1|windowstyle|\biwr\b|\biex\b/i);
   assert.equal((source.match(/timers.cancel\(\)/g) || []).length, 2);
