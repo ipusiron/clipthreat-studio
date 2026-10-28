@@ -64,7 +64,7 @@ hub: true
 
 > ![基本操作の初期画面](assets/screenshot.png)
 >
-> *基本操作タブの初期表示（1280×800、70,360バイト）*
+> *基本操作タブの初期表示（1280×800、70,353バイト）*
 
 > ![安全化したClickFixデモ](assets/screenshot2.png)
 >

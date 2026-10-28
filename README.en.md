@@ -26,7 +26,7 @@ Its tabs cover reading, writing, paste monitoring, and ClickFix prompts, illustr
 
 > ![Initial clipboard basics screen](assets/en/screenshot.png)
 >
-> *Initial Basics tab in English (1280×800, 53,889 bytes)*
+> *Initial Basics tab in English (1280×800, 53,890 bytes)*
 
 > ![Safe ClickFix demonstration](assets/en/screenshot2.png)
 >
