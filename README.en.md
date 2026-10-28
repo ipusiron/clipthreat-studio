@@ -40,8 +40,6 @@ Its tabs cover reading, writing, paste monitoring, and ClickFix prompts, illustr
 >
 > *Invisible characters, direction controls, and mixed scripts detected; controls shown as labels (1280×800, 42,933 bytes)*
 
-Images 1–3 in the Japanese README show the first release. This English README shows the current English interface.
-
 ---
 
 ## 🎯 Features
