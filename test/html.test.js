@@ -33,3 +33,13 @@ test('eight accessible tabs, eleven keyboard accordions and a labelled dialog', 
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
   assert.equal(ids.length, new Set(ids).size);
 });
+
+test('language toggle keeps a gap from the title wider than its focus outline', () => {
+  const css = readFileSync(new URL('../style.css', import.meta.url), 'utf8');
+  const focus = css.match(/:focus-visible \{ outline: (\d+)px solid [^;]+; outline-offset: (\d+)px; \}/);
+  const outside = Number(focus[1]) + Number(focus[2]);
+  const gaps = [...css.matchAll(/\.header-title \{([^}]+)\}/g)].map(m => m[1].match(/gap:\s*([\d.]+)rem/));
+  assert.equal(gaps.length, 2, 'desktop and narrow-screen header rules');
+  for (const gap of gaps) assert.ok(gap && Number(gap[1]) * 16 > outside, `header gap must exceed ${outside}px`);
+  assert.match(html, /<h1>[^<]+<\/h1>\s*<button type="button" id="language-toggle"/);
+});
