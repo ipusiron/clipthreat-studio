@@ -20,7 +20,7 @@ category_en:
   - Web Security
   - Social Engineering
 
-difficulty: 3
+difficulty: 2
 
 tags:
   - clipboard
